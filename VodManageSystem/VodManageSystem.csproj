@@ -1,0 +1,89 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+    
+   <PropertyGroup>
+    <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
+  </PropertyGroup>
+    
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" />
+    <PackageReference Include="Microsoft.AspNetCore.All">
+      <PrivateAssets Condition="'%(PackageReference.Version)' == ''">all</PrivateAssets>
+      <Publish Condition="'%(PackageReference.Version)' == ''">true</Publish>
+    </PackageReference>
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.2" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.Design" Version="1.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\DataModels\" />
+    <Folder Include="Views\Authenticate\" />
+    <Folder Include="Views\Songs\" />
+    <Folder Include="Views\Shared\DisplayTemplates\" />
+    <Folder Include="ExtensionMethods\" />
+    <Folder Include="Utilities\" />
+    <Folder Include="Models\Dao\" />
+    <Folder Include="wwwroot\lib\propper\" />
+    <Folder Include="Views\Languages\" />
+    <Folder Include="Views\Singareas\" />
+    <Folder Include="Views\Singers\" />
+    <Folder Include="Views\Playerscore\" />
+    <Folder Include="Api\" />
+    <Folder Include="Api\Controllers\" />
+    <Folder Include="Views\Android\" />
+    <Folder Include="Views\AspDotNetCore\" />
+    <Folder Include="Views\AWS_EC2\" />
+    <Folder Include="wwwroot\TechDocuments\" />
+    <Folder Include="wwwroot\TechDocuments\AWS_EC2\" />
+    <Folder Include="wwwroot\TechDocuments\Android\" />
+    <Folder Include="wwwroot\TechDocuments\AspDotNetCore\" />
+    <Folder Include="Views\Contact\" />
+    <Folder Include="wwwroot\TechDocuments\PrivacyPolicy\" />
+    <Folder Include="Views\PrivacyPolicy\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="VodManageSystem.tar" />
+    <None Remove="Documents\AWS_EC2_Document.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Views\Home\About.cshtml" />
+    <Content Remove="Views\AWS_EC2\AWS_EC2_Document.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="wwwroot\TechDocuments\Index.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="wwwroot\TechDocuments\AWS_EC2_Document.html">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="wwwroot\TechDocuments\AWS_EC2_Document %28copy%29.html">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="wwwroot\TechDocuments\Android_Document.html">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="wwwroot\TechDocuments\Android_Document %28copy%29.html">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="wwwroot\TechDocuments\AspDotNetCore_Document.html">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="wwwroot\TechDocuments\AWS_EC2\AWS_EC2_Document.html">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="wwwroot\TechDocuments\Android\Android_Document.html">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="wwwroot\TechDocuments\AspDotNetCore\AspDotNetCore_Document.html">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+</Project>
