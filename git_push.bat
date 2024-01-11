@@ -1,1 +1,0 @@
-git push -u https://SmileChaoLee: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@github.com/SmileChaoLee/VodManageSystem.git main
