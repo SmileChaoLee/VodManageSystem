@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/VodManageSystem/bin/Debug/netcoreapp2.0/VodManageSystem.dll",
+            "program": "${workspaceFolder}/VodManageSystem/bin/Debug/netcoreapp2.1/VodManageSystem.dll",
             "args": [],
             "cwd": "${workspaceFolder}/VodManageSystem",
             "stopAtEntry": false,
