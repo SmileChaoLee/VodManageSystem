@@ -1,27 +1,28 @@
 {
   "format": 1,
   "restore": {
-    "C:\\VisualStudio\\Smile_SoftwareSolution\\VodManageSystem\\VodManageSystem.csproj": {}
+    "/home/chaolee/VisualStudio/Smile_SoftwareSolution/VodManageSystem/VodManageSystem.csproj": {}
   },
   "projects": {
-    "C:\\VisualStudio\\Smile_SoftwareSolution\\VodManageSystem\\VodManageSystem.csproj": {
+    "/home/chaolee/VisualStudio/Smile_SoftwareSolution/VodManageSystem/VodManageSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\VisualStudio\\Smile_SoftwareSolution\\VodManageSystem\\VodManageSystem.csproj",
+        "projectUniqueName": "/home/chaolee/VisualStudio/Smile_SoftwareSolution/VodManageSystem/VodManageSystem.csproj",
         "projectName": "VodManageSystem",
-        "projectPath": "C:\\VisualStudio\\Smile_SoftwareSolution\\VodManageSystem\\VodManageSystem.csproj",
-        "packagesPath": "C:\\Users\\lee\\.nuget\\packages\\",
-        "outputPath": "C:\\VisualStudio\\Smile_SoftwareSolution\\VodManageSystem\\obj\\",
+        "projectPath": "/home/chaolee/VisualStudio/Smile_SoftwareSolution/VodManageSystem/VodManageSystem.csproj",
+        "packagesPath": "/home/chaolee/.nuget/packages/",
+        "outputPath": "/home/chaolee/VisualStudio/Smile_SoftwareSolution/VodManageSystem/obj/",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "/home/chaolee/dotnet/sdk/NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\lee\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/chaolee/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp2.1"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -49,7 +50,6 @@
               "version": "[2.1.1, )"
             },
             "Microsoft.NETCore.App": {
-              "suppressParent": "All",
               "target": "Package",
               "version": "[2.1.0, )",
               "autoReferenced": true
@@ -68,16 +68,10 @@
             }
           },
           "imports": [
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48"
+            "net461"
           ],
           "assetTargetFallback": true,
-          "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.408\\RuntimeIdentifierGraph.json"
+          "warn": true
         }
       }
     }

@@ -1,8 +1,9 @@
 {
   "runtimeOptions": {
     "additionalProbingPaths": [
-      "C:\\Users\\lee\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\lee\\.nuget\\packages"
+      "/home/chaolee/.dotnet/store/|arch|/|tfm|",
+      "/home/chaolee/.nuget/packages",
+      "/home/chaolee/dotnet/sdk/NuGetFallbackFolder"
     ]
   }
 }
