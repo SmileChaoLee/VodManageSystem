@@ -14,5 +14,6 @@
             "username": "chaolee",
             "password": "Samjoe86637971"
         }
-    ]
+    ],
+    "git.terminalAuthentication": false
 }

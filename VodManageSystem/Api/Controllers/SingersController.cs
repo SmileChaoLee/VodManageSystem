@@ -29,7 +29,7 @@ namespace VodManageSystem.Api.Controllers
             _songsManager = songsManager;
         }
 
-        // GET: api/values
+        // GET: api/values --> means "web address/api/singers"
         [HttpGet]
         public string Get()
         {
@@ -56,7 +56,7 @@ namespace VodManageSystem.Api.Controllers
             return jObjectForAll.ToString();
         }
 
-        // GET api/values/5
+        // GET api/values/5 --> means "web address/api/singers/5"  --> id = 5
         [HttpGet("{id}")]
         public async Task<string> Get(int id)
         {
