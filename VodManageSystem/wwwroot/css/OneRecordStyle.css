@@ -35,7 +35,13 @@ span.errorMsg {
     color: red;
 }
 input {
-    width: 400px;
+    width: 500px;
+    text-align: left;
+    color: black;
+    background-color: white;
+}
+input.first {
+    width: 200px;
     text-align: left;
     color: black;
     background-color: white;

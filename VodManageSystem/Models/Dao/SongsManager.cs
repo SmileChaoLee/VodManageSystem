@@ -90,6 +90,7 @@ namespace VodManageSystem.Models.Dao
                 result = ErrorCodeModel.Singer2NoNotFound;
                 return result;
             }
+            /*  not for local KTV anymore
             if (song.VodYn == "Y")
             {
                 // must have VodNo and Pathname
@@ -106,6 +107,7 @@ namespace VodManageSystem.Models.Dao
                     return result;
                 }
             }
+            */
             if (song.SNumWord <= 0)
             {
                 // number of words cannot be less than 0 or equal to 0
