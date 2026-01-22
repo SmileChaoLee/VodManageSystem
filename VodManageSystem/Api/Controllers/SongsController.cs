@@ -110,8 +110,9 @@ namespace VodManageSystem.Api.Controllers
         }
 
         // PUT api/values/5
+        // Updates one song to Song table
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateOneSong(int id, [FromBody]Song song)
+        public async Task<IActionResult> Put(int id, [FromBody]Song song)
         {
             Console.WriteLine("HttpPut[\"{id}\")]");
             Console.WriteLine("id = " + id + "song = " + song);
