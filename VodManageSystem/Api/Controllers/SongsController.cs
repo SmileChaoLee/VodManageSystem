@@ -60,7 +60,7 @@ namespace VodManageSystem.Api.Controllers
             for (int i = 0; i < songs.Count; i++)
             {
                 Song song = songs[i];
-                jObject = JsonUtil.ConvertSongToJsongObject(song);
+                jObject = JsonUtil.ConvertSongToJsonObject(song);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("songs", jArray);
@@ -74,7 +74,7 @@ namespace VodManageSystem.Api.Controllers
         {
             // get one song
             Song song = await _songsManager.FindOneSongById(id);
-            JObject jObject = JsonUtil.ConvertSongToJsongObject(song);
+            JObject jObject = JsonUtil.ConvertSongToJsonObject(song);
             JObject returnJSON = new JObject();
             returnJSON.Add("song", jObject);
 
@@ -147,7 +147,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var song in songs)
             {
-                jObject = JsonUtil.ConvertSongToJsongObject(song);
+                jObject = JsonUtil.ConvertSongToJsonObject(song);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("songs", jArray);

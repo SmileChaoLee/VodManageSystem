@@ -53,7 +53,7 @@ namespace VodManageSystem.Utilities
         }
 
 
-        public static JObject ConvertSingerToJsongObject(Singer singer)
+        public static JObject ConvertSingerToJsonObject(Singer singer)
         {
             JObject jObject = new JObject();
             if (singer == null)
@@ -74,7 +74,7 @@ namespace VodManageSystem.Utilities
             return jObject;
         }
 
-        public static JObject ConvertSongToJsongObject(Song song)
+        public static JObject ConvertSongToJsonObject(Song song)
         {
             JObject jObject = new JObject();
             if (song == null)
@@ -136,7 +136,7 @@ namespace VodManageSystem.Utilities
             return jObject;
         }
 
-        public static JObject ConvertlanguageToJsongObject(Language language)
+        public static JObject ConvertLanguageToJsonObject(Language language)
         {
             JObject jObject = new JObject();
             if (language == null)
@@ -152,7 +152,7 @@ namespace VodManageSystem.Utilities
             return jObject;
         }
 
-        public static JObject ConvertSingareaToJsongObject(Singarea singarea)
+        public static JObject ConvertSingareaToJsonObject(Singarea singarea)
         {
             JObject jObject = new JObject();
             if (singarea == null)
@@ -168,9 +168,9 @@ namespace VodManageSystem.Utilities
             return jObject;
         }
 
-        public static JObject ConvertSingerTypeToJsongObject(Singarea singarea, string sex)
+        public static JObject ConvertSingerTypeToJsonObject(Singarea singarea, string sex)
         {
-            JObject jObject = ConvertSingareaToJsongObject(singarea);
+            JObject jObject = ConvertSingareaToJsonObject(singarea);
             jObject.Add("sex", sex);
 
             return jObject;

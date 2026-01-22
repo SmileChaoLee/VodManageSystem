@@ -50,7 +50,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var language in languages)
             {
-                jObject = JsonUtil.ConvertlanguageToJsongObject(language);
+                jObject = JsonUtil.ConvertLanguageToJsonObject(language);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("languages", jArray);
@@ -64,7 +64,7 @@ namespace VodManageSystem.Api.Controllers
         {
             // get one language
             Language language = await _languagesManager.FindOneLanguageById(id);
-            JObject jObject = JsonUtil.ConvertlanguageToJsongObject(language);
+            JObject jObject = JsonUtil.ConvertLanguageToJsonObject(language);
 
             JObject returnJSON = new JObject();
             returnJSON.Add("language", jObject);
@@ -304,7 +304,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var song in songs)
             {
-                jObject = JsonUtil.ConvertSongToJsongObject(song);
+                jObject = JsonUtil.ConvertSongToJsonObject(song);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("songs", jArray);

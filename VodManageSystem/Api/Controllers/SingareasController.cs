@@ -46,7 +46,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var singarea in singareas)
             {
-                jObject = JsonUtil.ConvertSingareaToJsongObject(singarea);
+                jObject = JsonUtil.ConvertSingareaToJsonObject(singarea);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("singareas", jArray);
@@ -75,11 +75,11 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var singarea in singareas)
             {
-                jObject = JsonUtil.ConvertSingerTypeToJsongObject(singarea, "0");
+                jObject = JsonUtil.ConvertSingerTypeToJsonObject(singarea, "0");
                 jArray.Add(jObject);
-                jObject = JsonUtil.ConvertSingerTypeToJsongObject(singarea, "1");
+                jObject = JsonUtil.ConvertSingerTypeToJsonObject(singarea, "1");
                 jArray.Add(jObject);
-                jObject = JsonUtil.ConvertSingerTypeToJsongObject(singarea, "2");
+                jObject = JsonUtil.ConvertSingerTypeToJsonObject(singarea, "2");
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("singerTypes", jArray);
@@ -93,7 +93,7 @@ namespace VodManageSystem.Api.Controllers
         {
             // get one Singarea
             Singarea singarea = await _singareasManager.FindOneSingareaById(id);
-            JObject jObject = JsonUtil.ConvertSingareaToJsongObject(singarea);
+            JObject jObject = JsonUtil.ConvertSingareaToJsonObject(singarea);
 
             JObject returnJSON = new JObject();
             returnJSON.Add("singarea", jObject);
@@ -202,7 +202,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var singer in singers)
             {
-                jObject = JsonUtil.ConvertSingerToJsongObject(singer);
+                jObject = JsonUtil.ConvertSingerToJsonObject(singer);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("singers", jArray);

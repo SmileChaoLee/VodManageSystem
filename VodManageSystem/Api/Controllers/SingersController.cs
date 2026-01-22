@@ -48,7 +48,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var singer in singers)
             {
-                jObject = JsonUtil.ConvertSingerToJsongObject(singer);
+                jObject = JsonUtil.ConvertSingerToJsonObject(singer);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("singers", jArray);
@@ -62,7 +62,7 @@ namespace VodManageSystem.Api.Controllers
         {
             // get one singer
             Singer singer = await _singersManager.FindOneSingerById(id);
-            JObject jObject = JsonUtil.ConvertSingerToJsongObject(singer);
+            JObject jObject = JsonUtil.ConvertSingerToJsonObject(singer);
             JObject returnJSON = new JObject();
             returnJSON.Add("singer", jObject);
 
@@ -89,7 +89,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var singer in singers)
             {
-                jObject = JsonUtil.ConvertSingerToJsongObject(singer);
+                jObject = JsonUtil.ConvertSingerToJsonObject(singer);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("singers", jArray);
@@ -129,7 +129,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var singer in singers)
             {
-                jObject = JsonUtil.ConvertSingerToJsongObject(singer);
+                jObject = JsonUtil.ConvertSingerToJsonObject(singer);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("singers", jArray);
@@ -252,7 +252,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var song in songs)
             {
-                jObject = JsonUtil.ConvertSongToJsongObject(song);
+                jObject = JsonUtil.ConvertSongToJsonObject(song);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("songs", jArray);
