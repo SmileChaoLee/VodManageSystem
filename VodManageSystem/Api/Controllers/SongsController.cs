@@ -112,27 +112,30 @@ namespace VodManageSystem.Api.Controllers
         // PUT api/values/5
         // Updates one song to Song table
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody]Song song)
+        public async Task<int> Put(int id, [FromBody]Song song)
         {
             Console.WriteLine("HttpPut[\"{id}\")]");
             Console.WriteLine("id = " + id + "song = " + song);
             int result = await _songsManager.UpdateOneSongById(id, song);
             Console.WriteLine("result = " + result);
-
-            if (result == ErrorCodeModel.Succeeded)
+            int isSuccessful;
+            if (result == ErrorCodeModel.Succeeded || result == ErrorCodeModel.SongNotChanged)
             {
                 // succeeded to update
                 Console.WriteLine("succeeded to update");
-                return Ok(result); // Returns 200 OK
+                isSuccessful = 1;
+
             }
             else
             {
                 // failed to update
                 Console.WriteLine("failed to update");
                 // Returns 400 Bad Request so Android knows it failed
-                return BadRequest(result);
+                isSuccessful = -1;
             }
-
+            Console.WriteLine("isSuccessful = " + isSuccessful);
+            return isSuccessful;
+        
         }
 
         // DELETE api/values/5
