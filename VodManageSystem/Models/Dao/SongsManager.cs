@@ -127,18 +127,21 @@ namespace VodManageSystem.Models.Dao
 
             if (pageSize <= 0)
             {
-                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                Console.WriteLine("GetTotalRecordsAndPages.pageSize cannot be less than 0.");
                 return result;
             }
 
             int count = _context.Song.Count();
+            Console.WriteLine("GetTotalRecordsAndPages.count = " + count);
             int totalPages = count / pageSize;
-            if ((totalPages * pageSize) != count)
+            Console.WriteLine("GetTotalRecordsAndPages.totalPages = " + totalPages);
+            if ((totalPages * pageSize) < count)
             {
                 totalPages++;
             }
             result[0] = count;
             result[1] = totalPages;
+            Console.WriteLine("GetTotalRecordsAndPages.totalPages = " + totalPages);
 
             return result;
         }
@@ -174,7 +177,7 @@ namespace VodManageSystem.Models.Dao
             int pageSize = mState.PageSize;
             if (pageSize <= 0)
             {
-                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                Console.WriteLine("pageSize cannot be less than 0.");
                 return null;
             }
 
@@ -259,7 +262,7 @@ namespace VodManageSystem.Models.Dao
             int pageSize = mState.PageSize;
             if (pageSize <= 0)
             {
-                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                Console.WriteLine("pageSize cannot be less than 0.");
                 return null;
             }
 
@@ -347,7 +350,7 @@ namespace VodManageSystem.Models.Dao
         private IQueryable<Song> GetAllSongsIQueryable(StateOfRequest mState)
         {
             IQueryable<Song> songs = GetAllSongsIQueryableWithoutFilter(mState);
-            songs = GetSongsIQueryableAddFilter(songs, mState.QueryCondition);
+            // songs = GetSongsIQueryableAddFilter(songs, mState.QueryCondition);
 
             return songs;
         }
@@ -364,7 +367,7 @@ namespace VodManageSystem.Models.Dao
             int pageSize = mState.PageSize;
             if (pageSize <= 0)
             {
-                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                Console.WriteLine("pageSize cannot be less than 0.");
                 return new List<Song>();
             }
 
@@ -376,27 +379,35 @@ namespace VodManageSystem.Models.Dao
 
         public List<Song> GetOnePageOfSongs(StateOfRequest mState)
         {
+            Console.WriteLine("GetOnePageOfSongs");
             if (mState == null)
             {
                 return new List<Song>();
             }
             int pageSize = mState.PageSize;
+            Console.WriteLine("GetOnePageOfSongs.pageSize = " + pageSize);
             if (pageSize <= 0)
             {
-                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                Console.WriteLine("pageSize cannot be less than 0.");
                 return new List<Song>();
             }
 
+
+            int pageNo = mState.CurrentPageNo;
+            Console.WriteLine("GetOnePageOfSongs.pageNo = " + pageNo);
+
+            int[] returnNumbers = GetTotalRecordsAndPages(pageSize);
+            int totalRecords = returnNumbers[0];
+            Console.WriteLine("GetOnePageOfSongs.totalRecords = " + totalRecords);
+            int totalPages = returnNumbers[1];
+            Console.WriteLine("GetOnePageOfSongs.totalPages = " + totalPages);
+
             IQueryable<Song> totalSongs = GetAllSongsIQueryable(mState);
+            Console.WriteLine("GetOnePageOfSongs.totalSongs = " + totalSongs);
             if (totalSongs == null)
             {
                 return new List<Song>();
             }
-
-            int pageNo = mState.CurrentPageNo;
-            int[] returnNumbers = GetTotalRecordsAndPages(pageSize);
-            int totalRecords = returnNumbers[0];
-            int totalPages = returnNumbers[1];
 
             // bool getAll = false; // removed on 2018-11-26
             if (pageNo == -1)
@@ -423,10 +434,18 @@ namespace VodManageSystem.Models.Dao
                     pageNo = totalPages;
                 }
             }
+            Console.WriteLine("GetOnePageOfSongs.pageNo = " + pageNo);
 
             int recordNum = (pageNo - 1) * pageSize;
+            Console.WriteLine("GetOnePageOfSongs.recordNum = " + recordNum);
 
-            List<Song> songs = songs = totalSongs.Skip(recordNum).Take(pageSize).ToList();
+            // Song song = totalSongs.FirstOrDefault();    // go to the first
+            // Console.WriteLine("GetOnePageOfSongs.song.songNo = " + song.SongNo);
+            // Console.WriteLine("GetOnePageOfSongs.song.songNa = " + song.SongNa);
+
+            // List<Song> songs = totalSongs.Skip(recordNum).Take(pageSize).ToList();
+            List<Song> songs = totalSongs.Skip(recordNum).Take(pageSize).ToList();
+            Console.WriteLine("GetOnePageOfSongs.songs.Count = " + songs.Count);
 
             UpdateStateOfRequest(mState, songs.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
 
@@ -442,7 +461,7 @@ namespace VodManageSystem.Models.Dao
             int pageSize = mState.PageSize;
             if (pageSize <= 0)
             {
-                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                Console.WriteLine("pageSize cannot be less than 0.");
                 return new List<Song>();
             }
 
@@ -508,7 +527,7 @@ namespace VodManageSystem.Models.Dao
             int pageSize = mState.PageSize;
             if (pageSize <= 0)
             {
-                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                Console.WriteLine("pageSize cannot be less than 0.");
                 return new List<Song>();
             }
 
@@ -579,7 +598,7 @@ namespace VodManageSystem.Models.Dao
             int pageSize = mState.PageSize;
             if (pageSize <= 0)
             {
-                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                Console.WriteLine("pageSize cannot be less than 0.");
                 return new List<Song>();
             }
 
@@ -646,7 +665,7 @@ namespace VodManageSystem.Models.Dao
             int pageSize = mState.PageSize;
             if (pageSize <= 0)
             {
-                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                Console.WriteLine("pageSize cannot be less than 0.");
                 return new List<Song>();
             }
 
@@ -720,7 +739,7 @@ namespace VodManageSystem.Models.Dao
             int pageSize = mState.PageSize;
             if (pageSize <= 0)
             {
-                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                Console.WriteLine("pageSize cannot be less than 0.");
                 return new List<Song>();
             }
 

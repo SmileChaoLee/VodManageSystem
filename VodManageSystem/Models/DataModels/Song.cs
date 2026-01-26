@@ -14,6 +14,8 @@ namespace VodManageSystem.Models.DataModels
         public int? SNumWord { get; set; }
         public int? NumFw { get; set; }
         public string NumPw { get; set; }
+        public int Singer1Id { get; set; }
+        public int Singer2Id { get; set; }
         public bool SeleTf { get; set; }
         public string Chor { get; set; }
         public string NMpeg { get; set; }
@@ -25,8 +27,6 @@ namespace VodManageSystem.Models.DataModels
         public int? OrderNum { get; set; }
         public int? OrdOldN { get; set; }
         public DateTime? InDate { get; set; }
-        public int Singer1Id { get; set; }
-        public int Singer2Id { get; set; }
 
         // [ForeignKey(nameof(LanguageId))]
         // public virtual Language Language { get; set; }

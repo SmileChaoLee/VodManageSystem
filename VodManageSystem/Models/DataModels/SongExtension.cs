@@ -24,9 +24,9 @@ namespace VodManageSystem.Models.DataModels
             LanguageId = 1;
             // LangNo = "01";   // for madarin song
             Singer1Id = 0;
-            // Singer1No = "09201"; // singer is unknown. for the first singer
+            // Singer1No = "10000"; // singer is unknown. for the first singer
             Singer2Id = 0;
-            // Singer2No = "09201"; // singer is unknown. for the second singer
+            // Singer2No = "10000"; // singer is unknown. for the second singer
             Chor = "N";     // default
             MMpeg = "12";
             NMpeg = "11";

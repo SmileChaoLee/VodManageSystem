@@ -60,7 +60,7 @@ namespace VodManageSystem.Models.Dao
 
             if (pageSize <= 0)
             {
-                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                Console.WriteLine("pageSize cannot be less than 0.");
                 return result;
             }
             // have to define queryCondition
@@ -110,7 +110,7 @@ namespace VodManageSystem.Models.Dao
             int pageSize = mState.PageSize;
             if (pageSize <= 0)
             {
-                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                Console.WriteLine("pageSize cannot be less than 0.");
                 return null;
             }
 
@@ -204,7 +204,7 @@ namespace VodManageSystem.Models.Dao
             int pageSize = mState.PageSize;
             if (pageSize <= 0)
             {
-                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                Console.WriteLine("pageSize cannot be less than 0.");
                 return new List<Singer>();
             }
 
@@ -270,7 +270,7 @@ namespace VodManageSystem.Models.Dao
             int pageSize = mState.PageSize;
             if (pageSize <= 0)
             {
-                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                Console.WriteLine("pageSize cannot be less than 0.");
                 return new List<Singer>();
             }
 
@@ -369,7 +369,7 @@ namespace VodManageSystem.Models.Dao
             int pageSize = mState.PageSize;
             if (pageSize <= 0)
             {
-                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                Console.WriteLine("pageSize cannot be less than 0.");
                 return new List<Singer>();
             }
 
