@@ -45,42 +45,43 @@
                     maxlength: 2,
                 },
                 NumFw: {
-                    // required: true,
-                    // min: 0,
+                    required: true,
+                    min: 0,
                     max: 99,
-                    // minlength: 1,
+                    minlength: 1,
                     maxlength: 2,
                 },
                 NumPw: {
-                    // required: true,
-                    // minlength: 1,
+                    required: true,
+                    minlength: 1,
                     maxlength: 1,
-                    // pattern:"[A-Z]"
+                    pattern:"[A-Z]"
                 },
                 NMpeg: {
-                    // required: true,
-                    // minlength: 2,
+                    required: true,
+                    minlength: 2,
                     maxlength: 2,
-                    // min: "00",
-                    // max: "23",
-                    // pattern: "[1-2][1-3]|[0][0]"
+                    min: "00",
+                    max: "23",
+                    pattern: "[1-2][1-3]|[0][0]"
                 },
                 MMpeg: {
-                    // required: true,
-                    // minlength: 2,
+                    required: true,
+                    minlength: 2,
                     maxlength: 2,
-                    // min: "00",
-                    // max: "23",
-                    // pattern: "[1-2][1-3]|[0][0]"
+                    min: "00",
+                    max: "23",
+                    pattern: "[1-2][1-3]|[0][0]"
                 },
                 VodNo: {
-                    // required: true,
-                    // minlength: 0,
+                    required: true,
+                    minlength: 0,
                     maxlength: 30,
-                    // pattern: "[0-9]{6}"
+                    // pattern: "[0-9]{30}"
                 },
                 Pathname: {
-                    // required: true,
+                    required: true,
+                    minlength: 0,
                     maxlength: 80,
                     // pattern: "[0-9A-Z/\\\\]*"
                 }
@@ -105,37 +106,37 @@
                     maxlength: "At most 2 digits"
                 },
                 NumFw: {
-                    // required: "Strokes for the song is required.",
-                    // min: "Minimum value is 0.",
+                    required: "Strokes for the song is required.",
+                    min: "Minimum value is 0.",
                     max: "Maximim value is 99.",
-                    // minlength: "At least 1 digit.",
+                    minlength: "At least 1 digit.",
                     maxlength: "At most 2 digits."
                 },
                 NumPw: {
-                    // required: "Pinyin for the song is required.",
-                    // minlength: "At least 1 alphabet.",
+                    required: "Pinyin for the song is required.",
+                    minlength: "At least 1 alphabet.",
                     maxlength: "At most 1 alphabet.",
-                    // pattern: "Only A-Z."
+                    pattern: "Only A-Z."
                 },
                 NMpeg: {
-                    // required: "Music track must be specified.",
-                    // minlength: "It must be 2 digits.",
+                    required: "Music track must be specified.",
+                    minlength: "It must be 2 digits.",
                     maxlength: "At most 2 digits.",
-                    // min: "The minimum is 00",
-                    // max: "The maximum is 23.",
-                    // pattern: "No such music track."
+                    min: "The minimum is 00",
+                    max: "The maximum is 23.",
+                    pattern: "No such music track."
                 },
                 MMpeg: {
-                    // required: "Vocal track must be specified.",
-                    // minlength: "It must be 2 digits.",
+                    required: "Vocal track must be specified.",
+                    minlength: "It must be 2 digits.",
                     maxlength: "At most 2 digits.",
-                    // min: "The minimum is 00.",
-                    // max: "The maximum is 23.",
-                    // pattern: "No such vocal track."
+                    min: "The minimum is 00.",
+                    max: "The maximum is 23.",
+                    pattern: "No such vocal track."
                 },
                 VodNo: {
-                    // required: "Vod No. is required.",
-                    // minlength: "The length of Vod No. must be less than 31 numbers.",
+                    required: "Vod No. is required.",
+                    minlength: "Vod No. can not be empty.",
                     maxlength: "The length must be at most 3",
                     // pattern: "Only numbers are allowed."
                 },
