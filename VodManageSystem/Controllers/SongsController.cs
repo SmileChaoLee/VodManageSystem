@@ -106,7 +106,7 @@ namespace VodManageSystem.Controllers
 
         // Post
         [HttpPost, ActionName("Find")]
-        public async Task<IActionResult> Find(string song_no, string vod_no, string song_na, int languageId, string sing_na1, string sing_na2, string search_type, string submitbutton, string song_state)
+        public async Task<IActionResult> Find(string song_no, string vod_no, string song_na, int languageId, string sing_na1, string sing_na2, int s_num_word, string search_type, string submitbutton, string song_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -162,6 +162,11 @@ namespace VodManageSystem.Controllers
             }
             sing_na2 = sing_na2.Trim();
 
+            if (s_num_word < 0)
+            {
+                s_num_word = 0;
+            }
+
             string sButton = submitbutton.ToUpper();
 
             if (sButton == "CANCEL")
@@ -196,6 +201,9 @@ namespace VodManageSystem.Controllers
 
             song.Singer2 = new Singer();    // for order by "Singer2.SingNa"
             song.Singer2.SingNa = sing_na2;
+
+            song.SNumWord = s_num_word;     // for order by song.SNumWord
+            Console.WriteLine("Find.s_num_word = " + s_num_word);
 
             List<Song> songsTemp = _songsManager.FindOnePageOfSongsForOneSong(mState, song, -1);
             temp_state = JsonUtil.SetJsonStringFromObject(mState);

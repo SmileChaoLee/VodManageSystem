@@ -168,91 +168,6 @@ namespace VodManageSystem.Models.Dao
             }
         }
 
-        private IQueryable<Song> GetAllSongsIQueryable_OLD(StateOfRequest mState)
-        {
-            if (mState == null)
-            {
-                return null;
-            }
-            int pageSize = mState.PageSize;
-            if (pageSize <= 0)
-            {
-                Console.WriteLine("pageSize cannot be less than 0.");
-                return null;
-            }
-
-            IQueryable<Song> totalSongs = _context.Song.Include(x => x.Language)
-                                          .Include(x => x.Singer1).Include(x => x.Singer2);
-
-            IQueryable<Song> songs;
-
-            string orderByParam = mState.OrderBy.Trim();
-            if (orderByParam == "")
-            {
-                songs = totalSongs;
-            }
-            else if (orderByParam.Equals("SongNo", StringComparison.OrdinalIgnoreCase))
-            {
-                songs = totalSongs.OrderBy(x => x.SongNo);
-            }
-            else if (orderByParam.Equals("SongNa", StringComparison.OrdinalIgnoreCase))
-            {
-                songs = totalSongs.OrderBy(x => x.SongNa).ThenBy(x => x.SongNo);
-            }
-            else if (orderByParam.Equals("NumWordsSongNa",StringComparison.OrdinalIgnoreCase))
-            {
-                songs = totalSongs.OrderBy(x=>x.SNumWord).ThenBy(x => x.SongNa).ThenBy(x => x.SongNo);
-            }
-            else if (orderByParam.Equals("VodNo", StringComparison.OrdinalIgnoreCase))
-            {
-                songs = totalSongs.OrderBy(x => x.VodNo).ThenBy(x => x.SongNo);
-            }
-            else if (orderByParam.Equals("LangSongNa", StringComparison.OrdinalIgnoreCase))
-            {
-                songs = totalSongs.OrderBy(x => x.Language == null)
-                                  .ThenBy(x => x.Language.LangNo + x.SongNa).ThenBy(x => x.SongNo);
-            }
-            else if (orderByParam.Equals("Singer1Na", StringComparison.OrdinalIgnoreCase))
-            {
-                songs = totalSongs.OrderBy(x => x.Singer1 == null)
-                                  .ThenBy(x => x.Singer1.SingNa).ThenBy(x => x.SongNo);
-            }
-            else if (orderByParam.Equals("Singer2Na", StringComparison.OrdinalIgnoreCase))
-            {
-                songs = totalSongs.OrderBy(x => x.Singer2 == null)
-                                  .ThenBy(x => x.Singer2.SingNa).ThenBy(x => x.SongNo);
-            }
-            else
-            {
-                // not inside range of roder by
-                songs = null;   // empty lsit
-            }
-
-            if ( (songs != null) && (!string.IsNullOrEmpty(mState.QueryCondition)) )
-            {
-                string queryString = mState.QueryCondition;
-                int plusPos = queryString.IndexOf("+", 0, StringComparison.Ordinal);
-                if (plusPos >= 1)
-                {
-                    // the query condition has two parts
-                    // the first one is the field name in song table
-                    // the second one is the vaue that the field contains
-                    string fieldName = queryString.Substring(0, plusPos).Trim();
-                    string fielsSubValue = queryString.Substring(plusPos + 1).Trim();
-                    if (fieldName.Equals("SongNo", StringComparison.OrdinalIgnoreCase))
-                    {
-                        songs = songs.Where(x => x.SongNo.Contains(fielsSubValue));
-                    }
-                    else if (fieldName.Equals("SongNa", StringComparison.OrdinalIgnoreCase))
-                    {
-                        songs = songs.Where(x => x.SongNa.Contains(fielsSubValue));
-                    }
-                }
-            }
-
-            return songs;
-        }
-
         private IQueryable<Song> GetAllSongsIQueryableWithoutFilter(StateOfRequest mState)
         {
             if (mState == null)
@@ -811,6 +726,11 @@ namespace VodManageSystem.Models.Dao
                     int len = singer2Na.Length;
                     songsTempList = totalSongs.Where(x => (x.Singer2 != null)
                          && (x.Singer2.SingNa.Trim().Substring(0, len) == singer2Na));
+                }
+                else if (orderByParam.Equals("NumWordsSongNa", StringComparison.OrdinalIgnoreCase))
+                {
+                    int? s_num_word = song.SNumWord;
+                    songsTempList = totalSongs.Where(x => (x.SNumWord == s_num_word));
                 }
                 else
                 {
