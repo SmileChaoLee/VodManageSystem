@@ -667,8 +667,10 @@ namespace VodManageSystem.Models.Dao
             List<Song> songs = null;
             Song songWithIndex = null;
             IQueryable<Song> songsTempList = null;
+        
+            string condition = mState.QueryCondition.Trim();
+            Console.WriteLine("FindOnePageOfSongsForOneSong.condition = " + condition);
 
-            string orderByParam = mState.OrderBy.Trim();
             if (id >= 0)
             {
                 // There was a song selected
@@ -677,31 +679,31 @@ namespace VodManageSystem.Models.Dao
             else
             {
                 // No song selected
-                if (orderByParam == "")
+                if (condition == "")
                 {
                     // order by Id
                     int song_id = song.Id;
                     songsTempList = totalSongs.Where(x => (x.Id == song_id));
                 }
-                else if (orderByParam.Equals("SongNo", StringComparison.OrdinalIgnoreCase))
+                else if (condition.Equals("SongNo", StringComparison.OrdinalIgnoreCase))
                 {
                     string song_no = song.SongNo.Trim();
                     int len = song_no.Length;
                     songsTempList = totalSongs.Where(x => x.SongNo.Trim().Substring(0, len) == song_no);
                 }
-                else if (orderByParam.Equals("SongNa",StringComparison.OrdinalIgnoreCase))
+                else if (condition.Equals("SongNa",StringComparison.OrdinalIgnoreCase))
                 {
                     string song_na = song.SongNa.Trim();
                     int len = song_na.Length;
                     songsTempList = totalSongs.Where(x => x.SongNa.Trim().Substring(0, len) == song_na);
                 }
-                else if (orderByParam.Equals("VodNo", StringComparison.OrdinalIgnoreCase))
+                else if (condition.Equals("VodNo", StringComparison.OrdinalIgnoreCase))
                 {
                     string vod_no = song.VodNo.Trim();
                     int len = vod_no.Length;
                     songsTempList = totalSongs.Where(x => x.VodNo.Trim().Substring(0, len) == vod_no);
                 }
-                else if (orderByParam.Equals("LangSongNa", StringComparison.OrdinalIgnoreCase))
+                else if (condition.Equals("LangSongNa", StringComparison.OrdinalIgnoreCase))
                 {
                     string lang_no = song.Language.LangNo;
                     if (string.IsNullOrEmpty(lang_no) )
@@ -713,21 +715,21 @@ namespace VodManageSystem.Models.Dao
                     songsTempList = totalSongs.Where(x => (x.Language != null)
                          && (x.Language.LangNo + x.SongNa.Trim().Substring(0, len) == lang_no + song_na));
                 }
-                else if (orderByParam.Equals("Singer1Na", StringComparison.OrdinalIgnoreCase))
+                else if (condition.Equals("Singer1Na", StringComparison.OrdinalIgnoreCase))
                 {
                     string singer1Na = song.Singer1.SingNa.Trim();
                     int len = singer1Na.Length;
                     songsTempList = totalSongs.Where(x => (x.Singer1 != null)
                          && (x.Singer1.SingNa.Trim().Substring(0, len) == singer1Na));
                 }
-                else if (orderByParam.Equals("Singer2Na", StringComparison.OrdinalIgnoreCase))
+                else if (condition.Equals("Singer2Na", StringComparison.OrdinalIgnoreCase))
                 {
                     string singer2Na = song.Singer2.SingNa.Trim();
                     int len = singer2Na.Length;
                     songsTempList = totalSongs.Where(x => (x.Singer2 != null)
                          && (x.Singer2.SingNa.Trim().Substring(0, len) == singer2Na));
                 }
-                else if (orderByParam.Equals("NumWordsSongNa", StringComparison.OrdinalIgnoreCase))
+                else if (condition.Equals("NumWordsSongNa", StringComparison.OrdinalIgnoreCase))
                 {
                     int? s_num_word = song.SNumWord;
                     songsTempList = totalSongs.Where(x => (x.SNumWord == s_num_word));

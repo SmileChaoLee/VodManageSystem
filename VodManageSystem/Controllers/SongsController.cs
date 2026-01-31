@@ -119,6 +119,8 @@ namespace VodManageSystem.Controllers
             {
                 mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(song_state);
             }
+            Console.WriteLine("Find.orderBy = " + mState.OrderBy);
+
             mState.StartTime = DateTime.Now;
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
@@ -181,8 +183,9 @@ namespace VodManageSystem.Controllers
                 return View();
             }
 
-            string searchType = search_type.Trim();
-            mState.OrderBy = searchType;
+            string searchType = search_type.Trim();               
+            mState.QueryCondition = searchType;
+            Console.WriteLine("Find.QueryCondition = " + mState.QueryCondition);
 
             Song song = new Song(); // new object
 

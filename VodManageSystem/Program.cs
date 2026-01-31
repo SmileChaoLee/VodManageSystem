@@ -53,6 +53,13 @@ namespace VodManageSystem
                            .UseUrls("http://127.0.0.1:5000")
                            // .UseUrls("http://192.168.0.108:5000")
                            // .UseUrls("http://10.0.9.191:5000")
+                           .UseKestrel(options =>
+                           {
+                           // Set the timeout for receiving request headers
+                           options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(5);        
+                           // Also set the Keep-Alive timeout to match
+                           options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(5);
+                           })
                            .Build();
     }
 }
