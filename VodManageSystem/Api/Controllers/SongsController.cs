@@ -103,6 +103,17 @@ namespace VodManageSystem.Api.Controllers
             return jObjectForAll.ToString();
         }
 
+        // GET api/values/10/1/"SongNo"/"10"    // filter is number of words
+        [HttpGet("{pageSize}/{pageNo}/{orderBy}/{numWords}")]
+        public string Get(int pageSize, int pageNo, string orderBy, string numWords)
+        {
+            Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}/{orderBy}/{numWords}\")]");
+
+            JObject jObjectForAll = GetSongs(pageSize, pageNo, orderBy, numWords);
+
+            return jObjectForAll.ToString();
+        }
+
         // POST api/values
         [HttpPost]
         public void Post([FromBody]string value)
@@ -160,6 +171,40 @@ namespace VodManageSystem.Api.Controllers
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
             List<Song> songs = _songsManager.GetOnePageOfSongs(mState);
+
+            JObject jObjectForAll = new JObject();
+            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
+            jObjectForAll.Add("pageSize", mState.PageSize);
+            jObjectForAll.Add("totalRecords", mState.TotalRecords);
+            jObjectForAll.Add("totalPages", mState.TotalPages);
+            JObject jObject;
+            JArray jArray = new JArray();
+            foreach (var song in songs)
+            {
+                jObject = JsonUtil.ConvertSongToJsonObject(song);
+                jArray.Add(jObject);
+            }
+            jObjectForAll.Add("songs", jArray);
+
+            return jObjectForAll;
+        }
+
+        private JObject GetSongs(int pageSize, int pageNo, string orderBy, string numWords)
+        {
+            string orderByParam;
+            if (string.IsNullOrEmpty(orderBy))
+            {
+                orderByParam = "";
+            }
+            else
+            {
+                orderByParam = orderBy.Trim();
+            }
+
+            StateOfRequest mState = new StateOfRequest(orderByParam);
+            mState.PageSize = pageSize;
+            mState.CurrentPageNo = pageNo;
+            List<Song> songs = _songsManager.GetOnePageOfSongsByNumWords(mState, numWords);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
