@@ -431,16 +431,12 @@ namespace VodManageSystem.Models.Dao
                 return new List<Song>();
             }
 
-            totalSongs = totalSongs.Where(x => (x.Singer1Id == singerId) || (x.Singer2Id == singerId));
-            int pageNo = mState.CurrentPageNo;
-            int totalRecords = totalSongs.Count();
-            int totalPages = totalRecords / pageSize;
-            if ( (totalPages * pageSize) != totalRecords)
-            {
-                totalPages++;
-            }
+            totalSongs = totalSongs.Where(x => (x.Singer1Id == singerId) || (x.Singer2Id == singerId));        
+            int[] returnNumbers = GetTotalRecordsAndPages(totalSongs, pageSize);
+            int totalRecords = returnNumbers[0];            
+            int totalPages = returnNumbers[1];
 
-            // bool getAll = false; // removed on 2018-11-26
+            int pageNo = mState.CurrentPageNo;            
             if (pageNo == -1)
             {
                 // get the last page
@@ -505,14 +501,11 @@ namespace VodManageSystem.Models.Dao
             {
                 totalSongs = totalSongs.Where(x => x.LanguageId == languageId);
             }
-            int pageNo = mState.CurrentPageNo;
-            int totalRecords = totalSongs.Count();
-            int totalPages = totalRecords / pageSize;
-            if ((totalPages * pageSize) != totalRecords)
-            {
-                totalPages++;
-            }
+            int[] returnNumbers = GetTotalRecordsAndPages(totalSongs, pageSize);
+            int totalRecords = returnNumbers[0];            
+            int totalPages = returnNumbers[1];
 
+            int pageNo = mState.CurrentPageNo;
             if (pageNo == -1)
             {
                 // get the last page
@@ -572,14 +565,11 @@ namespace VodManageSystem.Models.Dao
             totalSongs = totalSongs.Where(x => x.LanguageId == languageId).OrderByDescending(x => x.InDate).Take(100);
             totalSongs = GetSongsIQueryableAddFilter(totalSongs, mState.QueryCondition);
 
-            int pageNo = mState.CurrentPageNo;
-            int totalRecords = totalSongs.Count();
-            int totalPages = totalRecords / pageSize;
-            if ((totalPages * pageSize) != totalRecords)
-            {
-                totalPages++;
-            }
+            int[] returnNumbers = GetTotalRecordsAndPages(totalSongs, pageSize);
+            int totalRecords = returnNumbers[0];            
+            int totalPages = returnNumbers[1];
 
+            int pageNo = mState.CurrentPageNo;
             if (pageNo == -1)
             {
                 // get the last page
@@ -639,14 +629,11 @@ namespace VodManageSystem.Models.Dao
             totalSongs = totalSongs.Where(x => x.LanguageId == languageId).OrderByDescending(x=>x.OrderNum).Take(100);
             totalSongs = GetSongsIQueryableAddFilter(totalSongs, mState.QueryCondition);
 
-            int pageNo = mState.CurrentPageNo;
-            int totalRecords = totalSongs.Count();
-            int totalPages = totalRecords / pageSize;
-            if ((totalPages * pageSize) != totalRecords)
-            {
-                totalPages++;
-            }
+            int[] returnNumbers = GetTotalRecordsAndPages(totalSongs, pageSize);
+            int totalRecords = returnNumbers[0];            
+            int totalPages = returnNumbers[1];
 
+            int pageNo = mState.CurrentPageNo;            
             if (pageNo == -1)
             {
                 // get the last page
@@ -786,7 +773,10 @@ namespace VodManageSystem.Models.Dao
                 }
             }
 
-            int totalRecords = totalSongs.Count();  // the whole song table
+
+            int[] returnNumbers = GetTotalRecordsAndPages(totalSongs, pageSize);
+            int totalRecords = returnNumbers[0];            
+            int totalPages = returnNumbers[1];
 
             bool isFound = true;
             songWithIndex = songsTempList.FirstOrDefault(); // the first one found
@@ -803,13 +793,18 @@ namespace VodManageSystem.Models.Dao
                 else
                 {
                     // go to last page
-                    songWithIndex = totalSongs.LastOrDefault();
+                    // songWithIndex = totalSongs.LastOrDefault();
+                    songWithIndex = songsTempList.LastOrDefault();
+                    if (songWithIndex == null) {
+                        // return empty list
+                        return new List<Song>();
+                    }
                 }
             }
 
             song.CopyFrom(songWithIndex);
 
-            // find the row number of songWithIndex
+            // find the row number songWithIndex
             int tempCount = 0;
             foreach (var songVar in totalSongs)
             {
@@ -828,12 +823,6 @@ namespace VodManageSystem.Models.Dao
             int recordNo = (pageNo - 1) * pageSize;
 
             songs = totalSongs.Skip(recordNo).Take(pageSize).ToList();
-
-            int totalPages = totalRecords / pageSize;
-            if ((totalPages * pageSize) != totalRecords)
-            {
-                totalPages++;
-            }
 
             if (isFound)
             {

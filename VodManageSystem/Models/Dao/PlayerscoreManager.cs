@@ -27,7 +27,7 @@ namespace VodManageSystem.Models.Dao
         /// Gets the total page of playerscore table.
         /// </summary>
         /// <returns>The total page of Playerscore table.</returns>
-        private int[] GetTotalRecordsAndPages(int pageSize)    // by condition
+        private int[] GetTotalRecordsAndPages(IQueryable<Playerscore> totalPlayerss, int pageSize)    // by condition
         {
             int[] result = new int[2] { 0, 0 };
 
@@ -39,14 +39,14 @@ namespace VodManageSystem.Models.Dao
             // have to define queryCondition
             // queryCondition has not been used for now
 
-            int count = _context.Playerscore.Count();
-            int totalPages = count / pageSize;
-            if ((totalPages * pageSize) != count)
+            int totalRecords = totalPlayerss.Count();
+            int totalPages = totalRecords / pageSize;
+            if ((totalPages * pageSize) != totalRecords)
             {
                 totalPages++;
             }
 
-            result[0] = count;
+            result[0] = totalRecords;
             result[1] = totalPages;
 
             return result;
@@ -134,7 +134,7 @@ namespace VodManageSystem.Models.Dao
             }
 
             int pageNo = mState.CurrentPageNo;
-            int[] returnNumbers = GetTotalRecordsAndPages(pageSize);
+            int[] returnNumbers = GetTotalRecordsAndPages(totalPlayerscores, pageSize);
             int totalRecords = returnNumbers[0];
             int totalPages = returnNumbers[1];
 

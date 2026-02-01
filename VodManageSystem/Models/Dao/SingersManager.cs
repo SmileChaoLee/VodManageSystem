@@ -53,8 +53,8 @@ namespace VodManageSystem.Models.Dao
         /// <summary>
         /// Gets the total page of singer table.
         /// </summary>
-        /// <returns>The total page of Singer table.</returns>
-        private int[] GetTotalRecordsAndPages(int pageSize)    // by condition
+        /// <returns>The total page of IQueryable<Singer>.</returns>
+        private int[] GetTotalRecordsAndPages(IQueryable<Singer> totalSingers, int pageSize)    // by condition
         {
             int[] result = new int[2] { 0, 0 };
 
@@ -66,14 +66,14 @@ namespace VodManageSystem.Models.Dao
             // have to define queryCondition
             // queryCondition has not been used for now
 
-            int count = _context.Singer.Count();
-            int totalPages = count / pageSize;
-            if ((totalPages * pageSize) != count)
+            int totalRecords = totalSingers.Count();
+            int totalPages = totalRecords / pageSize;
+            if ((totalPages * pageSize) < totalRecords)
             {
                 totalPages++;
             }
 
-            result[0] = count;
+            result[0] = totalRecords;
             result[1] = totalPages;
 
             return result;
@@ -215,18 +215,9 @@ namespace VodManageSystem.Models.Dao
             }
 
             int pageNo = mState.CurrentPageNo;
-            int[] returnNumbers = GetTotalRecordsAndPages(pageSize);
+            int[] returnNumbers = GetTotalRecordsAndPages(totalSingers, pageSize);
             int totalRecords = returnNumbers[0];
             int totalPages = returnNumbers[1];
-
-            /*
-            int totalRecords = totalSingers.Count();
-            int totalPages = totalRecords / pageSize;
-            if ((totalPages * pageSize) != totalRecords)
-            {
-                totalPages++;
-            }
-            */
 
             if (pageNo == -1)
             {
@@ -289,14 +280,11 @@ namespace VodManageSystem.Models.Dao
                 totalSingers = totalSingers.Where(x => (x.AreaId == areaId) && (x.Sex == sex)) ;
             }
 
-            int pageNo = mState.CurrentPageNo;
-            int totalRecords = totalSingers.Count();
-            int totalPages = totalRecords / pageSize;
-            if ((totalPages * pageSize) != totalRecords)
-            {
-                totalPages++;
-            }
+            int[] returnNumbers = GetTotalRecordsAndPages(totalSingers, pageSize);
+            int totalRecords = returnNumbers[0];            
+            int totalPages = returnNumbers[1];
 
+            int pageNo = mState.CurrentPageNo;
             if (pageNo == -1)
             {
                 // get the last page
@@ -416,8 +404,10 @@ namespace VodManageSystem.Models.Dao
                     return new List<Singer>(); 
                 }
             }
-
-            int totalRecords = totalSingers.Count();  // the whole singer table
+        
+            int[] returnNumbers = GetTotalRecordsAndPages(totalSingers, pageSize);
+            int totalRecords = returnNumbers[0];            
+            int totalPages = returnNumbers[1];
 
             bool isFound = true;
             singerWithIndex = singersTempList.FirstOrDefault(); // the first one found
@@ -434,6 +424,10 @@ namespace VodManageSystem.Models.Dao
                 {
                     // go to last page
                     singerWithIndex = totalSingers.LastOrDefault();
+                    if (singerWithIndex == null) {
+                        // return empty list
+                        return new List<Singer>();
+                    }
                 }
             }
         
@@ -458,12 +452,6 @@ namespace VodManageSystem.Models.Dao
             int recordNo = (pageNo - 1) * pageSize;
 
             singers = totalSingers.Skip(recordNo).Take(pageSize).ToList();
-
-            int totalPages = totalRecords / pageSize;
-            if ((totalPages * pageSize) != totalRecords)
-            {
-                totalPages++;
-            }
 
             if (isFound)
             {

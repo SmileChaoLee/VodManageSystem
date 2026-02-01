@@ -31,8 +31,8 @@ namespace VodManageSystem.Models.Dao
         /// <summary>
         /// Gets the total page of language table.
         /// </summary>
-        /// <returns>The total page of language table.</returns>
-        private int[] GetTotalRecordsAndPages(int pageSize)    // by condition
+        /// <returns>The total page of IQueryable<Language>.</returns>
+        private int[] GetTotalRecordsAndPages(IQueryable<Language> totalLangs, int pageSize)    // by condition
         {
             int[] result = new int[2] { 0, 0 };
 
@@ -44,14 +44,14 @@ namespace VodManageSystem.Models.Dao
             // have to define queryCondition
             // queryCondition has not been used for now
 
-            int count = _context.Language.Count();
-            int totalPages = count / pageSize;
-            if ((totalPages * pageSize) != count)
+            int totalRecords = totalLangs.Count();
+            int totalPages = totalRecords / pageSize;
+            if ((totalPages * pageSize) != totalRecords)
             {
                 totalPages++;
             }
 
-            result[0] = count;
+            result[0] = totalRecords;
             result[1] = totalPages;
 
             return result;
@@ -159,11 +159,11 @@ namespace VodManageSystem.Models.Dao
                 return new List<Language>();
             }
 
-            int pageNo = mState.CurrentPageNo;
-            int[] returnNumbers = GetTotalRecordsAndPages(pageSize);
+            int[] returnNumbers = GetTotalRecordsAndPages(totalLanguages, pageSize);
             int totalRecords = returnNumbers[0];
             int totalPages = returnNumbers[1];
 
+            int pageNo = mState.CurrentPageNo;
             if (pageNo == -1)
             {
                 // get the last page
@@ -281,7 +281,10 @@ namespace VodManageSystem.Models.Dao
                 }
             }
 
-            int totalRecords = totalLanguages.Count();  // the whole language table
+            // int totalRecords = totalLanguages.Count();  // the whole language table
+            int[] returnNumbers = GetTotalRecordsAndPages(totalLanguages, pageSize);
+            int totalRecords = returnNumbers[0];
+            int totalPages = returnNumbers[1];
 
             bool isFound = true;
             languageWithIndex = languagesTempList.FirstOrDefault(); // the first one found
@@ -299,6 +302,10 @@ namespace VodManageSystem.Models.Dao
                 {
                     // go to last page
                     languageWithIndex = totalLanguages.LastOrDefault();
+                    if (languageWithIndex == null) {
+                        // return empty list
+                        return new List<Language>();
+                    }
                 }
             }
 
@@ -323,12 +330,6 @@ namespace VodManageSystem.Models.Dao
             int recordNo = (pageNo - 1) * pageSize;
 
             languages = totalLanguages.Skip(recordNo).Take(pageSize).ToList();
-
-            int totalPages = totalRecords / pageSize;
-            if ((totalPages * pageSize) != totalRecords)
-            {
-                totalPages++;
-            }
 
             if (isFound)
             {
