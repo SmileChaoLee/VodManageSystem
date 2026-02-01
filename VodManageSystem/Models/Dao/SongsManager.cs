@@ -131,17 +131,46 @@ namespace VodManageSystem.Models.Dao
                 return result;
             }
 
-            int count = _context.Song.Count();
-            Console.WriteLine("GetTotalRecordsAndPages.count = " + count);
-            int totalPages = count / pageSize;
-            Console.WriteLine("GetTotalRecordsAndPages.totalPages = " + totalPages);
-            if ((totalPages * pageSize) < count)
+            int totalRecords = _context.Song.Count();        
+            int totalPages = totalRecords / pageSize;
+            if ((totalPages * pageSize) < totalRecords)
             {
                 totalPages++;
             }
-            result[0] = count;
-            result[1] = totalPages;
+            Console.WriteLine("GetTotalRecordsAndPages.totalRecords = " + totalRecords);        
             Console.WriteLine("GetTotalRecordsAndPages.totalPages = " + totalPages);
+
+            result[0] = totalRecords;
+            result[1] = totalPages;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the total page of song table.
+        /// </summary>
+        /// <returns>The total page of IQueryable<Song>.</returns>
+        private int[] GetTotalRecordsAndPages(IQueryable<Song> totalSongs, int pageSize)  // by a condition
+        {
+            int[] result = new int[2] { 0, 0 };
+
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("GetTotalRecordsAndPages.pageSize cannot be less than 0.");
+                return result;
+            }
+
+            int totalRecords = totalSongs.Count();
+            int totalPages = totalRecords / pageSize;
+            if ((totalPages * pageSize) < totalRecords)
+            {
+                totalPages++;
+            }
+            Console.WriteLine("GetTotalRecordsAndPages.totalRecords = " + totalRecords);
+            Console.WriteLine("GetTotalRecordsAndPages.totalPages = " + totalPages);
+
+            result[0] = totalRecords;
+            result[1] = totalPages;
 
             return result;
         }
@@ -282,7 +311,7 @@ namespace VodManageSystem.Models.Dao
             int pageSize = mState.PageSize;
             if (pageSize <= 0)
             {
-                Console.WriteLine("pageSize cannot be less than 0.");
+                Console.WriteLine("GetAllSongs.pageSize cannot be less than 0.");
                 return new List<Song>();
             }
 
@@ -292,120 +321,48 @@ namespace VodManageSystem.Models.Dao
             return totalSongs;
         }
 
+        // No filter
         public List<Song> GetOnePageOfSongs(StateOfRequest mState)
         {
             Console.WriteLine("GetOnePageOfSongs");
-            return GetOnePageOfSongsByNumWords(mState, "");
-            /*
-            if (mState == null)
-            {
-                return new List<Song>();
-            }
-            int pageSize = mState.PageSize;
-            Console.WriteLine("GetOnePageOfSongs.pageSize = " + pageSize);
-            if (pageSize <= 0)
-            {
-                Console.WriteLine("pageSize cannot be less than 0.");
-                return new List<Song>();
-            }
-
-
-            int pageNo = mState.CurrentPageNo;
-            Console.WriteLine("GetOnePageOfSongs.pageNo = " + pageNo);
-
-            int[] returnNumbers = GetTotalRecordsAndPages(pageSize);
-            int totalRecords = returnNumbers[0];
-            Console.WriteLine("GetOnePageOfSongs.totalRecords = " + totalRecords);
-            int totalPages = returnNumbers[1];
-            Console.WriteLine("GetOnePageOfSongs.totalPages = " + totalPages);
-
-            IQueryable<Song> totalSongs = GetAllSongsIQueryable(mState);
-            Console.WriteLine("GetOnePageOfSongs.totalSongs = " + totalSongs);
-            if (totalSongs == null)
-            {
-                return new List<Song>();
-            }
-
-            // bool getAll = false; // removed on 2018-11-26
-            if (pageNo == -1)
-            {
-                // get the last page
-                pageNo = totalPages;
-            }
-            else if (pageNo == -100)
-            {
-                // get all songs
-                // getAll = true;   // removed on 2018-11-26
-                pageNo = 1; // restore pageNo to 1
-                pageSize = totalRecords;    // added on 2018-11-26
-                totalPages = 1; //  added on 2018-11-26
-            }
-            else
-            {
-                if (pageNo < 1)
-                {
-                    pageNo = 1;
-                }
-                else if (pageNo > totalPages)
-                {
-                    pageNo = totalPages;
-                }
-            }
-            Console.WriteLine("GetOnePageOfSongs.pageNo = " + pageNo);
-
-            int recordNum = (pageNo - 1) * pageSize;
-            Console.WriteLine("GetOnePageOfSongs.recordNum = " + recordNum);
-
-            List<Song> songs = totalSongs.Skip(recordNum).Take(pageSize).ToList();
-            Console.WriteLine("GetOnePageOfSongs.songs.Count = " + songs.Count);
-
-            UpdateStateOfRequest(mState, songs.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
-
-            return songs;
-            */
+            return GetOnePageOfSongs(mState, "");
         }
 
-        public List<Song> GetOnePageOfSongsByNumWords(StateOfRequest mState, string numWords)
+        // filter with number of words, this functionalitry is only for WebApi so far
+        public List<Song> GetOnePageOfSongs(StateOfRequest mState, string numWords)
         {            
+            Console.WriteLine($"GetOnePageOfSongs.numWords = {numWords}");
             if (mState == null)
             {
                 return new List<Song>();
             }
             int pageSize = mState.PageSize;
-            Console.WriteLine($"GetOnePageOfSongsByNumWords.pageSize = {pageSize}");
+            Console.WriteLine($"GetOnePageOfSongs.pageSize = {pageSize}");
             if (pageSize <= 0)
             {
-                Console.WriteLine("GetOnePageOfSongsByNumWords.pageSize cannot be less than 0.");
+                Console.WriteLine("GetOnePageOfSongs.pageSize cannot be less than 0.");
                 return new List<Song>();
             }
 
-
             int pageNo = mState.CurrentPageNo;
-            Console.WriteLine($"GetOnePageOfSongsByNumWords.pageNo = {pageNo}");
-
-            int[] returnNumbers = GetTotalRecordsAndPages(pageSize);
-            int totalRecords = returnNumbers[0];
-            Console.WriteLine($"GetOnePageOfSongsByNumWords.totalRecords = {totalRecords}");
-            int totalPages = returnNumbers[1];
-            Console.WriteLine($"GetOnePageOfSongsByNumWords.totalPages = {totalPages}");
+            Console.WriteLine($"GetOnePageOfSongs.pageNo = {pageNo}");
 
             IQueryable<Song> totalSongs = GetAllSongsIQueryable(mState);        
             if (totalSongs == null)
             {
-                Console.WriteLine("GetOnePageOfSongsByNumWords.totalSongs = null");
+                Console.WriteLine("GetOnePageOfSongs.totalSongs = null");
                 return new List<Song>();
             }
 
-            Console.WriteLine($"GetOnePageOfSongsByNumWords.numWords = {numWords}");
             if (!string.IsNullOrEmpty(numWords)) {
                 int number;
                 if (Int32.TryParse(numWords, out number))
                 {
-                    Console.WriteLine($"GetOnePageOfSongsByNumWordsSuccessfully parsed: {number}");
+                    Console.WriteLine($"GetOnePageOfSongs parsed: {number}");
                 }
                 else
                 {
-                    Console.WriteLine("Conversion failed. The string is not a valid integer.");
+                    Console.WriteLine("GetOnePageOfSongs.Conversion failed. The string is not a valid integer.");
                     // 'number' will be 0 here if the conversion fails.
                     number = 1;
                 }
@@ -413,6 +370,12 @@ namespace VodManageSystem.Models.Dao
                 totalSongs = totalSongs.Where(x => (x.SNumWord == number));
             }
 
+            int[] returnNumbers = GetTotalRecordsAndPages(totalSongs, pageSize);
+            int totalRecords = returnNumbers[0];            
+            int totalPages = returnNumbers[1];
+            Console.WriteLine($"GetOnePageOfSongs.totalRecords = {totalRecords}");
+            Console.WriteLine($"GetOnePageOfSongs.totalPages = {totalPages}");
+
             // bool getAll = false; // removed on 2018-11-26
             if (pageNo == -1)
             {
@@ -421,8 +384,6 @@ namespace VodManageSystem.Models.Dao
             }
             else if (pageNo == -100)
             {
-                // get all songs
-                // getAll = true;   // removed on 2018-11-26
                 pageNo = 1; // restore pageNo to 1
                 pageSize = totalRecords;    // added on 2018-11-26
                 totalPages = 1; //  added on 2018-11-26
@@ -438,13 +399,13 @@ namespace VodManageSystem.Models.Dao
                     pageNo = totalPages;
                 }
             }
-            Console.WriteLine($"GetOnePageOfSongsByNumWords.pageNo = {pageNo}");
+            Console.WriteLine($"GetOnePageOfSongs.pageNo = {pageNo}");
 
             int recordNum = (pageNo - 1) * pageSize;
-            Console.WriteLine($"GetOnePageOfSongsByNumWords.recordNum = {recordNum}");
+            Console.WriteLine($"GetOnePageOfSongs.recordNum = {recordNum}");
 
             List<Song> songs = totalSongs.Skip(recordNum).Take(pageSize).ToList();
-            Console.WriteLine($"GetOnePageOfSongsByNumWords.songs.Count = {songs.Count}");
+            Console.WriteLine($"GetOnePageOfSongs.songs.Count = {songs.Count}");
 
             UpdateStateOfRequest(mState, songs.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
 

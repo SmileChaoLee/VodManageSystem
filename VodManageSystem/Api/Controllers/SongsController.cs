@@ -157,6 +157,8 @@ namespace VodManageSystem.Api.Controllers
 
         private JObject GetSongs(int pageSize, int pageNo, string orderBy)
         {
+            return GetSongs(pageSize, pageNo, orderBy, "");
+            /*
             string orderByParam;
             if (string.IsNullOrEmpty(orderBy))
             {
@@ -187,6 +189,7 @@ namespace VodManageSystem.Api.Controllers
             jObjectForAll.Add("songs", jArray);
 
             return jObjectForAll;
+            */
         }
 
         private JObject GetSongs(int pageSize, int pageNo, string orderBy, string numWords)
@@ -204,7 +207,7 @@ namespace VodManageSystem.Api.Controllers
             StateOfRequest mState = new StateOfRequest(orderByParam);
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
-            List<Song> songs = _songsManager.GetOnePageOfSongsByNumWords(mState, numWords);
+            List<Song> songs = _songsManager.GetOnePageOfSongs(mState, numWords);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
