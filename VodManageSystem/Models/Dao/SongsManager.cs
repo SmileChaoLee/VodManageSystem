@@ -696,8 +696,6 @@ namespace VodManageSystem.Models.Dao
                 return new List<Song>();
             }
 
-            List<Song> songs = null;
-            Song songWithIndex = null;
             IQueryable<Song> songsTempList = null;
         
             string condition = mState.QueryCondition.Trim();
@@ -769,6 +767,7 @@ namespace VodManageSystem.Models.Dao
                 else
                 {
                     // not inside range of roder by then return empty lsit
+                    Console.WriteLine("FindOnePageOfSongsForOneSong.wrong ");
                     return new List<Song>();
                 }
             }
@@ -778,14 +777,15 @@ namespace VodManageSystem.Models.Dao
             int totalRecords = returnNumbers[0];            
             int totalPages = returnNumbers[1];
 
-            bool isFound = true;
-            songWithIndex = songsTempList.FirstOrDefault(); // the first one found
+            bool isFound = true;            
+            Song songWithIndex = songsTempList.FirstOrDefault(); // the first one found
             if (songWithIndex == null)
             {
                 isFound = false;    // song that was assigned is not found
                 if (totalRecords == 0)
                 {
                     // Song Table is empty
+                    Console.WriteLine("FindOnePageOfSongsForOneSong.totalRecords = 0 ");
                     UpdateStateOfRequest(mState, songWithIndex, mState.CurrentPageNo, pageSize, 0, 0, true);
                     // return empty list
                     return new List<Song>();
@@ -793,9 +793,9 @@ namespace VodManageSystem.Models.Dao
                 else
                 {
                     // go to last page
-                    // songWithIndex = totalSongs.LastOrDefault();
-                    songWithIndex = songsTempList.LastOrDefault();
+                    songWithIndex = totalSongs.LastOrDefault();                
                     if (songWithIndex == null) {
+                        Console.WriteLine("FindOnePageOfSongsForOneSong.songWithIndex = null");
                         // return empty list
                         return new List<Song>();
                     }
@@ -804,7 +804,8 @@ namespace VodManageSystem.Models.Dao
 
             song.CopyFrom(songWithIndex);
 
-            // find the row number songWithIndex
+            // find the row number of songWithIndex
+            /*        
             int tempCount = 0;
             foreach (var songVar in totalSongs)
             {
@@ -814,15 +815,25 @@ namespace VodManageSystem.Models.Dao
                     break;
                 }
             }
+            */
+            // Get the ID we are looking for
+            int targetId = songWithIndex.Id; 
+            // Count all songs that appear before the one with the target ID
+            // We use TakeWhile or similar logic by taking the sequence up to the match
+            int countBefore = totalSongs
+                .Select(x => x.Id)
+                .AsEnumerable() // Transitions to memory at the last possible second
+                .TakeWhile(songId => songId != targetId)
+                .Count();
+            int tempCount = countBefore + 1;
             int pageNo = tempCount / pageSize;
-            if ((pageNo * pageSize) != tempCount)
+            if ((pageNo * pageSize) < tempCount)
             {
                 pageNo++;
             }
-
             int recordNo = (pageNo - 1) * pageSize;
 
-            songs = totalSongs.Skip(recordNo).Take(pageSize).ToList();
+            List<Song> songs = totalSongs.Skip(recordNo).Take(pageSize).ToList();
 
             if (isFound)
             {

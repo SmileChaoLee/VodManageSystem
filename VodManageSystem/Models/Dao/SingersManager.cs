@@ -214,11 +214,11 @@ namespace VodManageSystem.Models.Dao
                 return new List<Singer>();
             }
 
-            int pageNo = mState.CurrentPageNo;
             int[] returnNumbers = GetTotalRecordsAndPages(totalSingers, pageSize);
             int totalRecords = returnNumbers[0];
             int totalPages = returnNumbers[1];
 
+            int pageNo = mState.CurrentPageNo;
             if (pageNo == -1)
             {
                 // get the last page
@@ -434,7 +434,7 @@ namespace VodManageSystem.Models.Dao
             singer.CopyFrom(singerWithIndex);   // return to calling function
 
             // find the row number of singerWithIndex
-            int tempCount = 0;
+            /*
             foreach (var singerVar in totalSingers)
             {
                 ++tempCount;    // first row number is 1
@@ -443,6 +443,17 @@ namespace VodManageSystem.Models.Dao
                     break;
                 }
             }
+            */
+            // Get the ID we are looking for
+            int targetId = singerWithIndex.Id; 
+            // Count all singers that appear before the one with the target ID
+            // We use TakeWhile or similar logic by taking the sequence up to the match
+            int countBefore = totalSingers
+                .Select(x => x.Id)
+                .AsEnumerable() // Transitions to memory at the last possible second
+                .TakeWhile(singId => singId != targetId)
+                .Count();
+            int tempCount = countBefore + 1;        
             int pageNo =  tempCount / pageSize;
             if ( (pageNo * pageSize) != tempCount)
             {

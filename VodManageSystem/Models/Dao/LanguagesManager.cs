@@ -311,8 +311,8 @@ namespace VodManageSystem.Models.Dao
 
             language.CopyFrom(languageWithIndex);
 
-            // find the row number of languageWithIndex
-            int tempCount = 0;
+            // find the row number of languageWithIndex            
+            /*
             foreach (var languageVar in totalLanguages)
             {
                 ++tempCount;    // first row number is 1
@@ -321,6 +321,17 @@ namespace VodManageSystem.Models.Dao
                     break;
                 }
             }
+            */
+            // Get the ID we are looking for
+            int targetId = languageWithIndex.Id; 
+            // Count all languages that appear before the one with the target ID
+            // We use TakeWhile or similar logic by taking the sequence up to the match
+            int countBefore = totalLanguages
+                .Select(x => x.Id)
+                .AsEnumerable() // Transitions to memory at the last possible second
+                .TakeWhile(langId => langId != targetId)
+                .Count();
+            int tempCount = countBefore + 1;        
             int pageNo = tempCount / pageSize;
             if ((pageNo * pageSize) != tempCount)
             {

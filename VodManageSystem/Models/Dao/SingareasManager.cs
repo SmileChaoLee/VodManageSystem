@@ -311,8 +311,8 @@ namespace VodManageSystem.Models.Dao
 
             singarea.CopyFrom(singareaWithIndex);
 
-            // find the row number of singareaWithIndex
-            int tempCount = 0;
+            // find the row number of singareaWithIndex        
+            /*
             foreach (var singareaVar in totalSingareas)
             {
                 ++tempCount;    // first row number is 1
@@ -321,6 +321,17 @@ namespace VodManageSystem.Models.Dao
                     break;
                 }
             }
+            */
+            // Get the ID we are looking for
+            int targetId = singareaWithIndex.Id; 
+            // Count all singareas that appear before the one with the target ID
+            // We use TakeWhile or similar logic by taking the sequence up to the match
+            int countBefore = totalSingareas
+                .Select(x => x.Id)
+                .AsEnumerable() // Transitions to memory at the last possible second
+                .TakeWhile(singAreaId => singAreaId != targetId)
+                .Count();
+            int tempCount = countBefore + 1;        
             int pageNo = tempCount / pageSize;
             if ((pageNo * pageSize) != tempCount)
             {
