@@ -190,7 +190,7 @@ namespace VodManageSystem.Models.Dao
             }
 
             int recordNum = (pageNo - 1) * pageSize;
-
+            if (recordNum < 0) recordNum = 0;
             List<Singarea> singareas = totalSingareas.Skip(recordNum).Take(pageSize).ToList();
 
             UpdateStateOfRequest(mState, singareas.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
@@ -338,9 +338,9 @@ namespace VodManageSystem.Models.Dao
                 pageNo++;
             }
 
-            int recordNo = (pageNo - 1) * pageSize;
-
-            singareas = totalSingareas.Skip(recordNo).Take(pageSize).ToList();
+            int recordNum = (pageNo - 1) * pageSize;
+            if (recordNum < 0) recordNum = 0;
+            singareas = totalSingareas.Skip(recordNum).Take(pageSize).ToList();
 
             if (isFound)
             {

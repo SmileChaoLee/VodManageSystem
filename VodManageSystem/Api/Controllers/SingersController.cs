@@ -73,7 +73,7 @@ namespace VodManageSystem.Api.Controllers
         [HttpGet("{pageSize}/{pageNo}")]
         public string Get(int pageSize, int pageNo)
         {
-            Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}\")]");
+            Console.WriteLine("HttpGet[\"{pageSize}/{pageNo}\")]");
 
             StateOfRequest mState = new StateOfRequest("");
             mState.PageSize = pageSize;
@@ -100,7 +100,7 @@ namespace VodManageSystem.Api.Controllers
         // GET api/values/10/1/orderBy
         [HttpGet("{pageSize}/{pageNo}/{orderBy}")]
         public string Get(int pageSize, int pageNo, string orderBy) {
-            Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}/{orderBy}\")]");
+            Console.WriteLine("HttpGet[\"{pageSize}/{pageNo}/{orderBy}\")]");
 
             // orderBy is either "SingNo" or "SingNa"
 
@@ -161,7 +161,7 @@ namespace VodManageSystem.Api.Controllers
         [HttpGet("{id}/[Action]/{pageSize}/{pageNo}")]
         public string Songs(int id, int pageSize, int pageNo)
         {
-            Console.WriteLine("HttpGet[\"{id}/Songs/{ pageSize}/{ pageNo}\")]");
+            Console.WriteLine("HttpGet[\"{id}/Songs/{pageSize}/{pageNo}\")]");
 
             // orderBy = ""
             JObject jObjectForAll = GetSongsBySingerId(id, pageSize, pageNo, "", "");
@@ -176,7 +176,7 @@ namespace VodManageSystem.Api.Controllers
         [HttpGet("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}")]
         public string Songs(int id, int pageSize, int pageNo, string orderBy)
         {
-            Console.WriteLine("HttpGet[\"{id}/Songs/{ pageSize}/{ pageNo}/{orderBy}\")]");
+            Console.WriteLine("HttpGet[\"{id}/Songs/{pageSize}/{pageNo}/{orderBy}\")]");
 
             JObject jObjectForAll = GetSongsBySingerId(id, pageSize, pageNo, orderBy, "");
 
@@ -190,7 +190,7 @@ namespace VodManageSystem.Api.Controllers
         [HttpGet("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}/{filter}")]
         public string Songs(int id, int pageSize, int pageNo, string orderBy, string filter)
         {
-            Console.WriteLine("HttpGet[\"{id}/Songs/{ pageSize}/{ pageNo}/{orderBy}/{filter}\")]");
+            Console.WriteLine("HttpGet[\"{id}/Songs/{pageSize}/{pageNo}/{orderBy}/{filter}\")]");
 
             JObject jObjectForAll = GetSongsBySingerId(id, pageSize, pageNo, orderBy, filter);
 

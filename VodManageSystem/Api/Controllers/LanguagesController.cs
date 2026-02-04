@@ -154,7 +154,7 @@ namespace VodManageSystem.Api.Controllers
         [HttpGet("{id}/{numOfWords}/[Action]/{pageSize}/{pageNo}/{orderBy}")]
         public string Songs(int id, int numOfWords, int pageSize, int pageNo, string orderBy)
         {
-            Console.WriteLine("HttpGet[\"{id}/{numOfWords}/Songs/{ pageSize}/{ pageNo}/{orderBy}\")]");
+            Console.WriteLine("HttpGet[\"{id}/{numOfWords}/Songs/{pageSize}/{pageNo}/{orderBy}\")]");
             Console.WriteLine("\n\n numOfWrods == " + numOfWords + "\n\n");
 
             JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, numOfWords, pageSize, pageNo, orderBy, Normal_SongType, "");
@@ -170,7 +170,8 @@ namespace VodManageSystem.Api.Controllers
         public string Songs(int id, int numOfWords, int pageSize, int pageNo, string orderBy, string filter)
         {
             Console.WriteLine("HttpGet[\"{id}/{numOfWords}/Songs/{ pageSize}/{ pageNo}/{orderBy}/{filter}\")]");
-            Console.WriteLine("\n\n numOfWrods == " + numOfWords + "\n\n");
+            Console.WriteLine("Songss.numOfWords = " + numOfWords);
+            Console.WriteLine("Songss.filter = " + filter);
 
             JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, numOfWords, pageSize, pageNo, orderBy, Normal_SongType, filter);
 
@@ -253,6 +254,7 @@ namespace VodManageSystem.Api.Controllers
 
         private JObject GetSongsByLanguageIdAndSomething(int id, int numOfWords, int pageSize, int pageNo, string orderBy, int songType, String filter)
         {
+            Console.WriteLine("GetSongsByLanguageIdAndSomething.filter = " + filter);
             string orderByParam;
             if (string.IsNullOrEmpty(orderBy))
             {
@@ -281,14 +283,17 @@ namespace VodManageSystem.Api.Controllers
             switch (songType) {
                 case Normal_SongType:
                     // normal
+                    Console.WriteLine("GetSongsByLanguageIdAndSomething.normal");
                     songs = _songsManager.GetOnePageOfSongsByLanguageIdNumOfWords(mState, id, numOfWords, true);
                     break;
                 case NewSong_SongType:
                     // new songs
+                    Console.WriteLine("GetSongsByLanguageIdAndSomething.new songs");
                     songs = _songsManager.GetOnePageOfNewSongByLanguageId(mState, id, true);
                     break;
                 case HotSong_SongType:
                     // hot songs
+                    Console.WriteLine("GetSongsByLanguageIdAndSomething.hot songs");
                     songs = _songsManager.GetOnePageOfHotSongByLanguageId(mState, id, true);
                     break;
                 default:

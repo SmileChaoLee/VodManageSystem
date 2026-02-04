@@ -189,7 +189,7 @@ namespace VodManageSystem.Models.Dao
             }
 
             int recordNum = (pageNo - 1) * pageSize;
-
+            if (recordNum < 0) recordNum = 0;
             List<Language> languages = totalLanguages.Skip(recordNum).Take(pageSize).ToList();
 
             UpdateStateOfRequest(mState, languages.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
@@ -338,9 +338,9 @@ namespace VodManageSystem.Models.Dao
                 pageNo++;
             }
 
-            int recordNo = (pageNo - 1) * pageSize;
-
-            languages = totalLanguages.Skip(recordNo).Take(pageSize).ToList();
+            int recordNum = (pageNo - 1) * pageSize;
+            if (recordNum < 0) recordNum = 0;
+            languages = totalLanguages.Skip(recordNum).Take(pageSize).ToList();
 
             if (isFound)
             {

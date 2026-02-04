@@ -163,7 +163,7 @@ namespace VodManageSystem.Models.Dao
             }
 
             int recordNum = (pageNo - 1) * pageSize;
-
+            if (recordNum < 0) recordNum = 0;
             List<Playerscore> playerscores = totalPlayerscores.Skip(recordNum).Take(pageSize).ToList();
 
             UpdateStateOfRequest(mState, playerscores.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
