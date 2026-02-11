@@ -38,6 +38,9 @@ namespace VodManageSystem.Models.Dao
         /// <param name="song">Song.</param>
         private async Task<int> VerifySong(Song song)
         {
+            Console.WriteLine("LanguageId = " + song.LanguageId);
+            Console.WriteLine("Singer1Id = " + song.Singer1Id);
+            Console.WriteLine("Singer2Id = " + song.Singer2Id);
             int result = 1; // valid by verification 
             if (song.LanguageId >= 0)
             {

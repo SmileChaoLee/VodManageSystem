@@ -300,6 +300,7 @@ namespace VodManageSystem.Controllers
 
                 return View(nameof(SingersList), singersTemp);
             }
+            if (singer.PicFile == null) singer.PicFile = "";
             if (ModelState.IsValid)
             {
                 int result = await _singersManager.AddOneSingerToTable(singer);
@@ -393,6 +394,7 @@ namespace VodManageSystem.Controllers
                 temp_state = JsonUtil.SetJsonStringFromObject(mState);
                 return RedirectToAction(nameof(SingersList), new { singer_state = temp_state });
             }
+            if (singer.PicFile == null) singer.PicFile = "";
             if (ModelState.IsValid)
             {
                 // start updating table
