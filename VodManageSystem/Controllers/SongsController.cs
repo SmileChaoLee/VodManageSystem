@@ -459,8 +459,13 @@ namespace VodManageSystem.Controllers
         // POST: Song/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string submitbutton, string song_state, [Bind("Id","SongNo,SongNa,SNumWord,NumFw,NumPw,Chor,NMpeg,MMpeg,VodYn,VodNo,Pathname,InDate,LanguageId,Singer1Id,Singer2Id")] Song song)
+        public async Task<IActionResult> Edit(string submitbutton, string song_state,
+        [Bind("Id","SongNo,SongNa,LanguageId,SNumWord,NumFw,NumPw,Singer1Id,Singer2Id,Chor,VodYn,NMpeg,MMpeg,VodNo,Pathname,OrdNo,OrderNum,OrdOldN,InDate")] Song song)
         {
+            Console.WriteLine("song.OrdNo = " + song.OrdNo);
+            Console.WriteLine("song.OrderNum = " + song.OrderNum);
+            Console.WriteLine("song.OrdOldN = " + song.OrdOldN);
+            
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
             StateOfRequest mState;

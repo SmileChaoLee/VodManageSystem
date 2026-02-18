@@ -107,6 +107,9 @@
         <tr>
             <td class="labelname">In_Date</td>
             <td>
+                <input type="hidden" asp-for="OrdNo" />
+                <input type="hidden" asp-for="OrderNum" />
+                <input type="hidden" asp-for="OrdOldN" />
                 <input type="date" asp-for="InDate" class="first" />
                 <span asp-validation-for="InDate" class="text-danger"></span>
             </td>
