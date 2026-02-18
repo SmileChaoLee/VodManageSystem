@@ -679,8 +679,8 @@ namespace VodManageSystem.Models.Dao
                 return new List<Song>();
             }
 
-            // only take 100 songs
-            totalSongs = totalSongs.Where(x => x.LanguageId == languageId).OrderByDescending(x=>x.OrderNum).Take(100);
+            // only take 200 songs
+            totalSongs = totalSongs.Where(x => x.LanguageId == languageId).OrderByDescending(x=>x.OrderNum).Take(200);
             totalSongs = GetSongsIQueryableAddFilter(totalSongs, mState.QueryCondition);
 
             int[] returnNumbers = GetTotalRecordsAndPages(totalSongs, pageSize);
