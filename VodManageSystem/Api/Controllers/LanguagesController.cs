@@ -8,7 +8,6 @@ using VodManageSystem.Models;
 using VodManageSystem.Models.Dao;
 using VodManageSystem.Models.DataModels;
 using VodManageSystem.Utilities;
-using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

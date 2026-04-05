@@ -771,47 +771,42 @@ namespace VodManageSystem.Models.Dao
                 }
                 else if (condition.Equals("SongNo", StringComparison.OrdinalIgnoreCase))
                 {
-                    string song_no = song.SongNo.Trim();
-                    int len = song_no.Length;
-                    songsTempList = totalSongs.Where(x => x.SongNo.Trim().Substring(0, len) == song_no);
+                    string song_no = (song.SongNo ?? "").Trim();
+                    songsTempList = totalSongs.Where(x => (x.SongNo ?? "").Trim().StartsWith(song_no));
                 }
                 else if (condition.Equals("SongNa",StringComparison.OrdinalIgnoreCase))
                 {
-                    string song_na = song.SongNa.Trim();
-                    int len = song_na.Length;
-                    songsTempList = totalSongs.Where(x => x.SongNa.Trim().Substring(0, len) == song_na);
+                    string song_na = (song.SongNa ?? "").Trim();
+                    songsTempList = totalSongs.Where(x => (x.SongNa ?? "").Trim().StartsWith(song_na));
                 }
                 else if (condition.Equals("VodNo", StringComparison.OrdinalIgnoreCase))
                 {
-                    string vod_no = song.VodNo.Trim();
-                    int len = vod_no.Length;
-                    songsTempList = totalSongs.Where(x => x.VodNo.Trim().Substring(0, len) == vod_no);
+                    string vod_no = (song.VodNo ?? "").Trim();
+                    songsTempList = totalSongs.Where(x => (x.VodNo ?? "").Trim().StartsWith(vod_no));
                 }
                 else if (condition.Equals("LangSongNa", StringComparison.OrdinalIgnoreCase))
                 {
-                    string lang_no = song.Language.LangNo;
+                    string lang_no = song.Language?.LangNo ?? "";
                     if (string.IsNullOrEmpty(lang_no) )
                     {
-                        lang_no = _context.Language.FirstOrDefault().LangNo;
+                        lang_no = _context.Language.FirstOrDefault()?.LangNo ?? "";
                     }
-                    string song_na = song.SongNa.Trim();
-                    int len = song_na.Length;
+                    string song_na = (song.SongNa ?? "").Trim();
                     songsTempList = totalSongs.Where(x => (x.Language != null)
-                         && (x.Language.LangNo + x.SongNa.Trim().Substring(0, len) == lang_no + song_na));
+                         && ((x.Language.LangNo ?? "") == lang_no)
+                         && (x.SongNa ?? "").Trim().StartsWith(song_na));
                 }
                 else if (condition.Equals("Singer1Na", StringComparison.OrdinalIgnoreCase))
                 {
-                    string singer1Na = song.Singer1.SingNa.Trim();
-                    int len = singer1Na.Length;
+                    string singer1Na = song.Singer1?.SingNa?.Trim() ?? "";
                     songsTempList = totalSongs.Where(x => (x.Singer1 != null)
-                         && (x.Singer1.SingNa.Trim().Substring(0, len) == singer1Na));
+                         && (x.Singer1.SingNa ?? "").Trim().StartsWith(singer1Na));
                 }
                 else if (condition.Equals("Singer2Na", StringComparison.OrdinalIgnoreCase))
                 {
-                    string singer2Na = song.Singer2.SingNa.Trim();
-                    int len = singer2Na.Length;
+                    string singer2Na = song.Singer2?.SingNa?.Trim() ?? "";
                     songsTempList = totalSongs.Where(x => (x.Singer2 != null)
-                         && (x.Singer2.SingNa.Trim().Substring(0, len) == singer2Na));
+                         && (x.Singer2.SingNa ?? "").Trim().StartsWith(singer2Na));
                 }
                 else if (condition.Equals("NumWordsSongNa", StringComparison.OrdinalIgnoreCase))
                 {

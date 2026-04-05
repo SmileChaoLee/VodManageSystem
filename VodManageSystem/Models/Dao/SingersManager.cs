@@ -388,15 +388,13 @@ namespace VodManageSystem.Models.Dao
                 }
                 else if (orderByParam.Equals("SingNo", StringComparison.OrdinalIgnoreCase))
                 {
-                    string sing_no = singer.SingNo.Trim();
-                    int len = sing_no.Length;
-                    singersTempList = totalSingers.Where(x=>x.SingNo.Trim().Substring(0, len) == sing_no);
+                    string sing_no = (singer.SingNo ?? "").Trim();
+                    singersTempList = totalSingers.Where(x => (x.SingNo ?? "").Trim().StartsWith(sing_no));
                 }
                 else if (orderByParam.Equals("SingNa", StringComparison.OrdinalIgnoreCase))
                 {
-                    string sing_na = singer.SingNa.Trim();
-                    int len = sing_na.Length;
-                    singersTempList = totalSingers.Where(x => x.SingNa.Trim().Substring(0, len) == sing_na);
+                    string sing_na = (singer.SingNa ?? "").Trim();
+                    singersTempList = totalSingers.Where(x => (x.SingNa ?? "").Trim().StartsWith(sing_na));
                 }
                 else
                 {

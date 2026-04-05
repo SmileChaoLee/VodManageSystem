@@ -16,9 +16,9 @@ namespace VodManageSystem.Models.DataModels
         // [Key]
         // [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string AreaNo { get; set; }
-        public string AreaNa { get; set; }
-        public string AreaEn { get; set; }
+        public string? AreaNo { get; set; }
+        public string? AreaNa { get; set; }
+        public string? AreaEn { get; set; }
 
         // [InverseProperty(nameof(Singer.Singarea))]
         // public virtual ICollection<Singer> Singers { get; set; }

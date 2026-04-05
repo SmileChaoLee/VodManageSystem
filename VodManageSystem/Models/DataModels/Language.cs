@@ -14,9 +14,9 @@ namespace VodManageSystem.Models.DataModels
         // [Key]
         // [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string LangNo { get; set; }
-        public string LangNa { get; set; }
-        public string LangEn { get; set; }
+        public string? LangNo { get; set; }
+        public string? LangNa { get; set; }
+        public string? LangEn { get; set; }
 
         // [InverseProperty(nameof(Song.Language))]
         // public virtual ICollection<Song> Songs { get; set; }

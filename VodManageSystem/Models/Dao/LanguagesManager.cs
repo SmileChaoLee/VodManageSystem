@@ -264,15 +264,13 @@ namespace VodManageSystem.Models.Dao
                 }
                 else if (orderByParam.Equals("LangNo", StringComparison.OrdinalIgnoreCase))
                 {
-                    string lang_no = language.LangNo.Trim();
-                    int len = lang_no.Length;
-                    languagesTempList = totalLanguages.Where(x => x.LangNo.Trim().Substring(0, len) == lang_no);
+                    string lang_no = (language.LangNo ?? "").Trim();
+                    languagesTempList = totalLanguages.Where(x => (x.LangNo ?? "").Trim().StartsWith(lang_no));
                 }
                 else if (orderByParam.Equals("LangNa", StringComparison.OrdinalIgnoreCase))
                 {
-                    string lang_na = language.LangNa.Trim();
-                    int len = lang_na.Length;
-                    languagesTempList = totalLanguages.Where(x => x.LangNa.Trim().Substring(0, len) == lang_na);
+                    string lang_na = (language.LangNa ?? "").Trim();
+                    languagesTempList = totalLanguages.Where(x => (x.LangNa ?? "").Trim().StartsWith(lang_na));
                 }
                 else
                 {

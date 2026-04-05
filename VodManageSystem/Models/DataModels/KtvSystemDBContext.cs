@@ -310,17 +310,14 @@ namespace VodManageSystem.Models.DataModels
                     .HasColumnType("int(11)");
 
                 entity.Property(e => e.LangEn)
-                    .IsRequired()
                     .HasColumnName("lang_en")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.LangNa)
-                    .IsRequired()
                     .HasColumnName("lang_na")
                     .HasMaxLength(8);
 
                 entity.Property(e => e.LangNo)
-                    .IsRequired()
                     .HasColumnName("lang_no")
                     .HasMaxLength(2);
             });
@@ -364,17 +361,14 @@ namespace VodManageSystem.Models.DataModels
                     .HasColumnType("int(11)");
 
                 entity.Property(e => e.AreaEn)
-                    .IsRequired()
                     .HasColumnName("area_en")
                     .HasMaxLength(28);
 
                 entity.Property(e => e.AreaNa)
-                    .IsRequired()
                     .HasColumnName("area_na")
                     .HasMaxLength(14);
 
                 entity.Property(e => e.AreaNo)
-                    .IsRequired()
                     .HasColumnName("area_no")
                     .HasMaxLength(2);
             });
@@ -399,39 +393,32 @@ namespace VodManageSystem.Models.DataModels
                     .HasColumnType("int(11)");
 
                 entity.Property(e => e.Chor)
-                    .IsRequired()
                     .HasColumnName("chor")
                     .HasMaxLength(1);
 
                 entity.Property(e => e.Hot)
-                    .IsRequired()
                     .HasColumnName("hot")
                     .HasMaxLength(1);
 
                 entity.Property(e => e.NumFw).HasColumnName("num_fw");
 
                 entity.Property(e => e.NumPw)
-                    .IsRequired()
                     .HasColumnName("num_pw")
                     .HasMaxLength(1);
 
                 entity.Property(e => e.PicFile)
-                    .IsRequired()
                     .HasColumnName("pic_file")
                     .HasMaxLength(5);
 
                 entity.Property(e => e.Sex)
-                    .IsRequired()
                     .HasColumnName("sex")
                     .HasMaxLength(1);
 
                 entity.Property(e => e.SingNa)
-                    .IsRequired()
                     .HasColumnName("sing_na")
                     .HasMaxLength(30);
 
                 entity.Property(e => e.SingNo)
-                    .IsRequired()
                     .HasColumnName("sing_no")
                     .HasMaxLength(5);
 
@@ -468,12 +455,10 @@ namespace VodManageSystem.Models.DataModels
                     .HasName("SongSinger2FKey_idx");
 
                 entity.Property(e => e.SongNo)
-                    .IsRequired()
                     .HasColumnName("song_no")
                     .HasMaxLength(6);
 
                 entity.Property(e => e.Chor)
-                    .IsRequired()
                     .HasColumnName("chor")
                     .HasMaxLength(1);
 
@@ -487,22 +472,18 @@ namespace VodManageSystem.Models.DataModels
                     .HasColumnType("int(11)");
 
                 entity.Property(e => e.MMpeg)
-                    .IsRequired()
                     .HasColumnName("m_mpeg")
                     .HasMaxLength(2);
 
                 entity.Property(e => e.NMpeg)
-                    .IsRequired()
                     .HasColumnName("n_mpeg")
                     .HasMaxLength(2);
 
                 entity.Property(e => e.NumFw)
-                    .IsRequired()
                     .HasColumnName("num_fw")
                     .HasColumnType("int(2)");
 
                 entity.Property(e => e.NumPw)
-                    .IsRequired()
                     .HasColumnName("num_pw")
                     .HasMaxLength(1);
 
@@ -519,12 +500,10 @@ namespace VodManageSystem.Models.DataModels
                     .HasColumnType("int(6)");
 
                 entity.Property(e => e.Pathname)
-                    .IsRequired()
                     .HasColumnName("pathname")
                     .HasMaxLength(6);
 
                 entity.Property(e => e.SNumWord)
-                    .IsRequired()
                     .HasColumnName("s_num_word")
                     .HasColumnType("int(2)");
                       
@@ -543,17 +522,14 @@ namespace VodManageSystem.Models.DataModels
                     .HasColumnType("int(11)");
 
                 entity.Property(e => e.SongNa)
-                    .IsRequired()
                     .HasColumnName("song_na")
                     .HasMaxLength(45);
 
                 entity.Property(e => e.VodNo)
-                    .IsRequired()
                     .HasColumnName("vod_no")
                     .HasMaxLength(6);
 
                 entity.Property(e => e.VodYn)
-                    .IsRequired()
                     .HasColumnName("vod_yn")
                     .HasMaxLength(1);
 

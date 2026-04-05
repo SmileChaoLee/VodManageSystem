@@ -16,15 +16,15 @@ namespace VodManageSystem.Models.DataModels
         // [Key]
         // [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string SingNo { get; set; }
-        public string SingNa { get; set; }
+        public string? SingNo { get; set; }
+        public string? SingNa { get; set; }
         public uint NumFw { get; set; }
-        public string NumPw { get; set; }
-        public string Sex { get; set; }
-        public string Chor { get; set; }
-        public string Hot { get; set; }
+        public string? NumPw { get; set; }
+        public string? Sex { get; set; }
+        public string? Chor { get; set; }
+        public string? Hot { get; set; }
         public int AreaId { get; set; }
-        public string PicFile { get; set; }
+        public string? PicFile { get; set; }
 
         // [ForeignKey(nameof(AreaId))]
         // public virtual Singarea Singarea { get; set; }

@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
-using System.Net;
-
 using VodManageSystem.Models.DataModels;
 
 namespace VodManageSystem
@@ -19,7 +12,7 @@ namespace VodManageSystem
     {
         public static void Main(string[] args)
         {
-            var host = BuildWebHost(args);
+            var host = CreateHostBuilder(args).Build();
 
             using (var scope = host.Services.CreateScope())
             {
@@ -46,20 +39,17 @@ namespace VodManageSystem
             host.Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) => WebHost.CreateDefaultBuilder(args)
-                           .UseStartup<Startup>()
-                           // .UseUrls("http://*:5000")
-                           // .UseUrls("http://localhost:5000")
-                           .UseUrls("http://127.0.0.1:5000")
-                           // .UseUrls("http://192.168.0.108:5000")
-                           // .UseUrls("http://10.0.9.191:5000")
-                           .UseKestrel(options =>
-                           {
-                           // Set the timeout for receiving request headers
-                           options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(5);        
-                           // Also set the Keep-Alive timeout to match
-                           options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(5);
-                           })
-                           .Build();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseUrls("http://127.0.0.1:5000");
+                    webBuilder.ConfigureKestrel(options =>
+                    {
+                        options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(5);
+                        options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(5);
+                    });
+                    webBuilder.UseStartup<Startup>();
+                });
     }
 }

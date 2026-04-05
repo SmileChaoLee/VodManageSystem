@@ -1,32 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "/home/chaolee/VisualStudio/Smile_SoftwareSolution/VodManageSystem/VodManageSystem.csproj": {}
+    "C:\\Users\\leech\\VsCodeProjects\\VodManageSystem\\VodManageSystem\\VodManageSystem.csproj": {}
   },
   "projects": {
-    "/home/chaolee/VisualStudio/Smile_SoftwareSolution/VodManageSystem/VodManageSystem.csproj": {
+    "C:\\Users\\leech\\VsCodeProjects\\VodManageSystem\\VodManageSystem\\VodManageSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/chaolee/VisualStudio/Smile_SoftwareSolution/VodManageSystem/VodManageSystem.csproj",
+        "projectUniqueName": "C:\\Users\\leech\\VsCodeProjects\\VodManageSystem\\VodManageSystem\\VodManageSystem.csproj",
         "projectName": "VodManageSystem",
-        "projectPath": "/home/chaolee/VisualStudio/Smile_SoftwareSolution/VodManageSystem/VodManageSystem.csproj",
-        "packagesPath": "/home/chaolee/.nuget/packages/",
-        "outputPath": "/home/chaolee/VisualStudio/Smile_SoftwareSolution/VodManageSystem/obj/",
+        "projectPath": "C:\\Users\\leech\\VsCodeProjects\\VodManageSystem\\VodManageSystem\\VodManageSystem.csproj",
+        "packagesPath": "C:\\Users\\leech\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\leech\\VsCodeProjects\\VodManageSystem\\VodManageSystem\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "/home/chaolee/dotnet/sdk/NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "/home/chaolee/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\leech\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "netcoreapp2.1"
+          "net8.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "netcoreapp2.1": {
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -34,44 +32,61 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
-        "netcoreapp2.1": {
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
-            "Microsoft.AspNetCore.All": {
-              "suppressParent": "All",
+            "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
               "target": "Package",
-              "version": "[2.1.1, )",
-              "autoReferenced": true
-            },
-            "Microsoft.AspNetCore.Session": {
-              "target": "Package",
-              "version": "[2.1.1, )"
-            },
-            "Microsoft.NETCore.App": {
-              "target": "Package",
-              "version": "[2.1.0, )",
-              "autoReferenced": true
+              "version": "[8.0.15, )"
             },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
-              "version": "[2.1.5, )"
+              "version": "[8.0.7, )"
             },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
-              "version": "[2.1.2, )"
-            },
-            "Pomelo.EntityFrameworkCore.MySql.Design": {
-              "target": "Package",
-              "version": "[1.1.2, )"
+              "version": "[8.0.2, )"
             }
           },
           "imports": [
-            "net461"
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
-          "warn": true
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.NETCore.App.Host.linux-x64",
+              "version": "[8.0.25, 8.0.25]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.419/PortableRuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "linux-x64": {
+          "#import": []
         }
       }
     }

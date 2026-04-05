@@ -264,15 +264,13 @@ namespace VodManageSystem.Models.Dao
                 }
                 else if (orderByParam.Equals("AreaNo", StringComparison.OrdinalIgnoreCase))
                 {
-                    string area_no = singarea.AreaNo.Trim();
-                    int len = area_no.Length;
-                    singareasTempList = totalSingareas.Where(x => x.AreaNo.Trim().Substring(0, len) == area_no);
+                    string area_no = (singarea.AreaNo ?? "").Trim();
+                    singareasTempList = totalSingareas.Where(x => (x.AreaNo ?? "").Trim().StartsWith(area_no));
                 }
                 else if (orderByParam.Equals("AreaNa", StringComparison.OrdinalIgnoreCase))
                 {
-                    string area_na = singarea.AreaNa.Trim();
-                    int len = area_na.Length;
-                    singareasTempList = totalSingareas.Where(x => x.AreaNa.Trim().Substring(0, len) == area_na);
+                    string area_na = (singarea.AreaNa ?? "").Trim();
+                    singareasTempList = totalSingareas.Where(x => (x.AreaNa ?? "").Trim().StartsWith(area_na));
                 }
                 else
                 {

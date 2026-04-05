@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 using VodManageSystem.Models.DataModels;
@@ -22,14 +23,7 @@ namespace VodManageSystem
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
-
-            // the follwing is to keep the properties' name as the as they are defined
-            // when the model is Serialized
-            // services.AddMvc()
-            // .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
-
-            services.AddMvc().AddJsonOptions(
+            services.AddMvc().AddNewtonsoftJson(
                 options =>
                 {
                     // the follwing is to keep the properties' name as the as they are defined
@@ -44,8 +38,9 @@ namespace VodManageSystem
             services.AddSession();
 
             // For pomelo.EntityFrameworkCore.MySql
+            var connectionString = Configuration.GetConnectionString("MySqlConnection");
             services.AddDbContext<KtvSystemDBContext>(options =>
-                  options.UseMySql(Configuration.GetConnectionString("MySqlConnection")));
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
             services.AddScoped<LanguagesManager>();  // languages management service
             services.AddScoped<SingareasManager>();  // singer areas management service
@@ -55,7 +50,7 @@ namespace VodManageSystem
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -68,11 +63,12 @@ namespace VodManageSystem
 
             app.UseStaticFiles();
             app.UseSession();
-            app.UseMvc(routes =>
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

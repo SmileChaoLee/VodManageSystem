@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/VodManageSystem.csproj",
+                "${workspaceFolder}/VodManageSystem/VodManageSystem.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/VodManageSystem.csproj",
+                "${workspaceFolder}/VodManageSystem/VodManageSystem.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -32,7 +32,8 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/VodManageSystem.csproj",
+                "--project",
+                "${workspaceFolder}/VodManageSystem/VodManageSystem.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
