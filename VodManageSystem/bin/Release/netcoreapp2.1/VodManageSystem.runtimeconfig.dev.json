@@ -1,9 +1,0 @@
-{
-  "runtimeOptions": {
-    "additionalProbingPaths": [
-      "/home/chaolee/.dotnet/store/|arch|/|tfm|",
-      "/home/chaolee/.nuget/packages",
-      "/home/chaolee/dotnet/sdk/NuGetFallbackFolder"
-    ]
-  }
-}
