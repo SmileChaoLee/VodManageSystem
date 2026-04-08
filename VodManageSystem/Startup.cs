@@ -4,10 +4,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-
 using VodManageSystem.Models.DataModels;
 using VodManageSystem.Models.Dao;
 using Newtonsoft.Json.Serialization;
+using System;
 
 namespace VodManageSystem
 {
@@ -39,6 +39,12 @@ namespace VodManageSystem
 
             // For pomelo.EntityFrameworkCore.MySql
             var connectionString = Configuration.GetConnectionString("MySqlConnection");
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new InvalidOperationException(
+                    "Missing connection string 'ConnectionStrings:MySqlConnection'. Configure it in appsettings.Development.json or environment variables.");
+            }
+
             services.AddDbContext<KtvSystemDBContext>(options =>
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
