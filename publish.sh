@@ -1,0 +1,1 @@
+dotnet publish --configuration Release --output ./publish --runtime linux-x64 --self-contained false
