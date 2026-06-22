@@ -57,16 +57,17 @@ namespace VodManageSystem.Api.Controllers
                 var searchResponse = await searchRequest.ExecuteAsync();
 
                 // 4. Map the complex Google API data model to your clean Android model
-                var cleanedVideos = searchResponse.Items.Select(item => new VideoItem
+                var cleanedVideos = searchResponse.Items.Select(item => new YouTubeVideo
                 {
                     Id = item.Id.VideoId,
                     Title = item.Snippet.Title,
                     Thumbnail = item.Snippet.Thumbnails.High?.Url ?? item.Snippet.Thumbnails.Medium?.Url ?? "",
                     ChannelTitle = item.Snippet.ChannelTitle
                 }).ToList();
-
+                Console.WriteLine("U2bController.cleanedVideos.Count = " + cleanedVideos.Count);
+                
                 var responsePayload = new VideoList { Videos = cleanedVideos };
-
+                
                 // 5. Send optimized JSON payload back to the Android client
                 return Ok(responsePayload);
             }

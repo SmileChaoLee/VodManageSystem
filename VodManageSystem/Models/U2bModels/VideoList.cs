@@ -4,6 +4,6 @@ namespace VodManageSystem.Models.U2bModels
 {
     public class VideoList
     {
-        public List<VideoItem> Videos { get; set; } = [];
+        public List<YouTubeVideo> Videos { get; set; } = [];
     }
 }
