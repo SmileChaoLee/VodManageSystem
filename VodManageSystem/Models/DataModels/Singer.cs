@@ -28,7 +28,7 @@ namespace VodManageSystem.Models.DataModels
 
         // [ForeignKey(nameof(AreaId))]
         // public virtual Singarea Singarea { get; set; }
-        public Singarea Singarea { get; set; }
+        public Singarea? Singarea { get; set; }
 
         // [InverseProperty(nameof(Song.Singer1))]
         // public virtual ICollection<Song> SongSinger1s { get; set; }
