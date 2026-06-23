@@ -4,7 +4,7 @@ namespace VodManageSystem.Models.DataModels
     public partial class Playerscore
     {
         public int Id { get; set; }
-        public string PlayerName { get; set; }
+        public string PlayerName { get; set; } = string.Empty;
         public int Score { get; set; }
         public int? GameId { get; set; }
     }

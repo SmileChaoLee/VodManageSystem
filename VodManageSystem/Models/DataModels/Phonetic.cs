@@ -5,9 +5,9 @@ namespace VodManageSystem.Models.DataModels
 {
     public partial class Phonetic
     {
-        public string PhnE { get; set; }
-        public string Pinyin { get; set; }
-        public string Pinyin2 { get; set; }
-        public string ChWord { get; set; }
+        public string PhnE { get; set; } = string.Empty;
+        public string Pinyin { get; set; } = string.Empty;
+        public string Pinyin2 { get; set; } = string.Empty;
+        public string ChWord { get; set; } = string.Empty;
     }
 }

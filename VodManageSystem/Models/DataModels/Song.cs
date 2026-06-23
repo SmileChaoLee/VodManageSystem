@@ -30,14 +30,14 @@ namespace VodManageSystem.Models.DataModels
 
         // [ForeignKey(nameof(LanguageId))]
         // public virtual Language Language { get; set; }
-        public Language Language { get; set; }
+        public Language? Language { get; set; }
 
         // [ForeignKey(nameof(Singer1Id))]
         // public virtual Singer Singer1 { get; set; }
-        public Singer Singer1 { get; set; }
+        public Singer? Singer1 { get; set; }
 
         // [ForeignKey(nameof(Singer2Id))]
         // public virtual Singer Singer2 { get; set; }
-        public Singer Singer2 { get; set; }
+        public Singer? Singer2 { get; set; }
     }
 }

@@ -7,6 +7,8 @@ using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using System.Linq;
 using VodManageSystem.Models.U2bModels;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 namespace VodManageSystem.Api.Controllers
 {
@@ -64,12 +66,31 @@ namespace VodManageSystem.Api.Controllers
                     Thumbnail = item.Snippet.Thumbnails.High?.Url ?? item.Snippet.Thumbnails.Medium?.Url ?? "",
                     ChannelTitle = item.Snippet.ChannelTitle
                 }).ToList();
+
+                JArray jArray = [];
+                if (cleanedVideos == null)
+                {
+                    return Ok(jArray.ToString());
+                    // return Ok(new List<YouTubeVideo>());
+                }
                 Console.WriteLine("U2bController.cleanedVideos.Count = " + cleanedVideos.Count);
                 
-                var responsePayload = new VideoList { Videos = cleanedVideos };
+                // var responsePayload = new VideoList { Videos = cleanedVideos };
                 
+                // 5. Send JSON array payload back to the Android client
+                foreach (var video in cleanedVideos)
+                {
+                    jArray.Add(new JObject
+                    {
+                        {"id", video.Id},
+                        {"title", video.Title},
+                        {"thumbnail", video.Thumbnail},
+                        {"channelTitle", video.ChannelTitle}
+                    });
+                }
+                return Ok(jArray.ToString());   // more readable
                 // 5. Send optimized JSON payload back to the Android client
-                return Ok(responsePayload);
+                // return Ok(cleanedVideos);
             }
             catch (Exception ex)
             {

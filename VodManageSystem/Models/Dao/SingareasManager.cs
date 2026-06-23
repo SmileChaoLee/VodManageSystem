@@ -79,7 +79,7 @@ namespace VodManageSystem.Models.Dao
             }
         }
 
-        private IQueryable<Singarea> GetAllSingareasIQueryable(StateOfRequest mState)
+        private IQueryable<Singarea>? GetAllSingareasIQueryable(StateOfRequest mState)
         {
             if (mState == null)
             {
@@ -96,7 +96,7 @@ namespace VodManageSystem.Models.Dao
 
             string orderByParam = mState.OrderBy.Trim();
 
-            IQueryable<Singarea> singareas;
+            IQueryable<Singarea>? singareas;
             if (orderByParam == "")
             {
                 singareas = totalSingareas;

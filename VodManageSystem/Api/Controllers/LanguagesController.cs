@@ -35,7 +35,7 @@ namespace VodManageSystem.Api.Controllers
         [HttpGet]
         public string Get()
         {
-            // get all singarea
+            // get all languages
             StateOfRequest mState = new StateOfRequest("LangNo");
             List<Language> languages = _languagesManager.GetAllLanguages(mState);
 

@@ -5,37 +5,37 @@ namespace VodManageSystem.Models.DataModels
 {
     public partial class Kkk2
     {
-        public string RNo { get; set; }
-        public string Rmno { get; set; }
-        public string NetNo { get; set; }
-        public string ComputerId { get; set; }
-        public string PwId { get; set; }
+        public string RNo { get; set; } = string.Empty;
+        public string Rmno { get; set; } = string.Empty;
+        public string NetNo { get; set; } = string.Empty;
+        public string ComputerId { get; set; } = string.Empty;
+        public string PwId { get; set; } = string.Empty;
         public bool PwctTf { get; set; }
         public uint OffTime { get; set; }
         public uint VvvId { get; set; }
-        public string RomId { get; set; }
+        public string RomId { get; set; } = string.Empty;
         public bool OpenTf { get; set; }
         public bool ChckTf { get; set; }
-        public string Tm { get; set; }
+        public string Tm { get; set; } = string.Empty;
         public bool UpdTf { get; set; }
         public bool EjTf { get; set; }
         public bool Dp8Tf { get; set; }
         public bool Illegal { get; set; }
-        public string PlSong { get; set; }
-        public string FormNo { get; set; }
-        public string BegTime { get; set; }
+        public string PlSong { get; set; } = string.Empty;
+        public string FormNo { get; set; } = string.Empty;
+        public string BegTime { get; set; } = string.Empty;
         public bool BadTf { get; set; }
-        public string SpNo { get; set; }
-        public string Sn1 { get; set; }
-        public string Mult { get; set; }
-        public string Repeat { get; set; }
-        public string ServYn { get; set; }
-        public string EnServ { get; set; }
-        public string DisServ { get; set; }
-        public string CastStr1 { get; set; }
-        public string CastStr2 { get; set; }
-        public string CastStr3 { get; set; }
-        public string CastAa { get; set; }
+        public string SpNo { get; set; } = string.Empty;
+        public string Sn1 { get; set; } = string.Empty;
+        public string Mult { get; set; } = string.Empty;
+        public string Repeat { get; set; } = string.Empty;
+        public string ServYn { get; set; } = string.Empty;
+        public string EnServ { get; set; } = string.Empty;
+        public string DisServ { get; set; } = string.Empty;
+        public string CastStr1 { get; set; } = string.Empty;
+        public string CastStr2 { get; set; } = string.Empty;
+        public string CastStr3 { get; set; } = string.Empty;
+        public string CastAa { get; set; } = string.Empty;
         public bool Pause { get; set; }
         public bool Ffward { get; set; }
         public bool Upmusc { get; set; }
@@ -50,6 +50,6 @@ namespace VodManageSystem.Models.DataModels
         public bool Sp11 { get; set; }
         public bool Sp12 { get; set; }
         public bool Mute { get; set; }
-        public string Mobile { get; set; }
+        public string Mobile { get; set; } = string.Empty;
     }
 }
