@@ -1,0 +1,1 @@
+\\wsl.localhost\Ubuntu\home\chaolee\VsCodeProjects\VodManageSystem\VodManageSystem\bin\Release\net8.0\publish\
