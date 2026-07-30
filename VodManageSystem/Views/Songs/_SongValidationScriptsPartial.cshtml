@@ -2,7 +2,7 @@
 
 @{
     string boolString = "false";    // default is "Add" or "Edit" --> writable
-    string vBag = ViewBag.Action as string;
+    string? vBag = ViewBag.Action as string;
     if (!string.IsNullOrEmpty(vBag))
     {
         if ( (vBag.Trim() == "Delete") || (vBag.Trim() == "Details") )

@@ -1,10 +1,65 @@
-
 @model VodManageSystem.Models.DataModels.Song
 
 @using System
 @using Microsoft.AspNetCore.Html
 
 <link rel="stylesheet" style="text/css" href="~/css/OneRecordStyle.css" />
+
+<style>
+    /* CSS for the searchable singer dropdown */
+    .singer-dropdown {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        max-width: 250px;
+    }
+
+    .singer-input {
+        width: 100%;
+        padding: 5px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: #fff;
+    }
+
+    .singer-list {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        border: 1px solid #ccc;
+        border-top: none;
+        border-radius: 0 0 4px 4px;
+        max-height: 150px;
+        overflow-y: auto;
+        background: white;
+        z-index: 1000;
+        display: none;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .singer-list.show {
+        display: block;
+    }
+
+    .singer-item {
+        padding: 8px;
+        cursor: pointer;
+        border-bottom: 1px solid #eee;
+    }
+
+    .singer-item:hover {
+        background-color: #f0f0f0;
+    }
+
+    .singer-item.selected {
+        background-color: #e6f7ff;
+        font-weight: bold;
+    }
+</style>
 
 <form id="OneSongForm" asp-controller="Songs" asp-action="@ViewBag.Action" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -53,13 +108,23 @@
             </td>
         </tr>
         <tr>
-            <td class="labelname">Singer1 No.</td>
+            <td class="labelname">Singer 1</td>
             <td>
-                <select asp-for="Singer1Id" asp-items="@ViewBag.SingerList"></select>
+                <div class="singer-dropdown">
+                    <input type="text" class="singer-input" id="Singer1Search" placeholder="Select Singer 1..." />
+                    <input type="hidden" id="Singer1Id" asp-for="Singer1Id" />
+                    <ul id="Singer1List" class="singer-list"></ul>
+                </div>
+                <span asp-validation-for="Singer1Id" class="text-danger"></span>
             </td>
             <td class="labelname">Singer 2</td>
             <td>
-                <select asp-for="Singer2Id" asp-items="@ViewBag.SingerList"></select>
+                <div class="singer-dropdown">
+                    <input type="text" class="singer-input" id="Singer2Search" placeholder="Select Singer 2..." />
+                    <input type="hidden" id="Singer2Id" asp-for="Singer2Id" />
+                    <ul id="Singer2List" class="singer-list"></ul>
+                </div>
+                <span asp-validation-for="Singer2Id" class="text-danger"></span>
             </td>
         </tr>
         <tr>
@@ -143,3 +208,95 @@
     <input type="hidden" name="song_state" value="@ViewBag.SongState" />
     @Html.HiddenFor(model=>model.Id)
 </form>
+
+<script>
+    // Assuming ViewBag.SingerList contains SelectListItem objects with .Text and .Value
+    const singerData = @Html.Raw(Json.Serialize(ViewBag.SingerList));
+
+    function initSingerDropdown(inputId, listId, hiddenId) {
+        const input = document.getElementById(inputId);
+        const list = document.getElementById(listId);
+        const hidden = document.getElementById(hiddenId);
+
+        if (!input || !list || !hidden) return;
+
+        let isDropdownOpen = false;
+
+        // Populate list
+        function renderList(filterText = '') {
+            list.innerHTML = '';
+            const lowerFilter = filterText.toLowerCase();
+
+            singerData.forEach(item => {
+                // Assuming item.Text is the name and item.Value is the ID
+                if (item.Text.toLowerCase().includes(lowerFilter)) {
+                    const li = document.createElement('li');
+                    li.className = 'singer-item';
+                    li.textContent = item.Text;
+                    li.dataset.value = item.Value;
+                    li.dataset.text = item.Text;
+                    
+                    li.addEventListener('click', () => {
+                        selectSinger(item.Value, item.Text);
+                    });
+                    list.appendChild(li);
+                }
+            });
+
+            if (list.children.length > 0) {
+                list.classList.add('show');
+            } else {
+                list.classList.remove('show');
+            }
+        }
+
+        function selectSinger(value, text) {
+            input.value = text;
+            hidden.value = value;
+            list.classList.remove('show');
+            isDropdownOpen = false;
+            // Remove any existing selected class
+            const items = list.querySelectorAll('.singer-item');
+            items.forEach(i => i.classList.remove('selected'));
+        }
+
+        // Event Listeners
+        input.addEventListener('input', (e) => {
+            renderList(e.target.value);
+            isDropdownOpen = true;
+        });
+
+        input.addEventListener('focus', () => {
+            if (!isDropdownOpen) {
+                renderList(input.value);
+                isDropdownOpen = true;
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!input.contains(e.target) && !list.contains(e.target)) {
+                list.classList.remove('show');
+                isDropdownOpen = false;
+            }
+        });
+
+        // Handle existing value on page load (for Edit mode)
+        if (hidden.value) {
+            // To set the text correctly on load, we need to find the item in singerData
+            const foundItem = singerData.find(i => i.Value == hidden.value);
+            if (foundItem) {
+                input.value = foundItem.Text;
+            } else {
+                // Fallback if value exists but not in list (shouldn't happen normally)
+                input.value = hidden.value;
+            }
+        }
+    }
+
+    // Initialize both dropdowns
+    document.addEventListener('DOMContentLoaded', () => {
+        initSingerDropdown('Singer1Search', 'Singer1List', 'Singer1Id');
+        initSingerDropdown('Singer2Search', 'Singer2List', 'Singer2Id');
+    });
+</script>
