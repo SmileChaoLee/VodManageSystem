@@ -13,6 +13,8 @@ namespace VodManageSystem.Models
         public const int SongNoIsNotFound = -5;
         public const int Singer1NoNotFound = -7;
         public const int Singer2NoNotFound = -8;
+        public const int Singer1DoesNotExist = -58;
+        public const int Singer2DoesNotExist = -59;
         public const int OriginalSongNoIsEmpty = -11;
         public const int OriginalSongNotExist = -12;
         public const int VodNoOfSongIsEmpty = -21;
@@ -174,6 +176,12 @@ namespace VodManageSystem.Models
                 case SingerNoDuplicate:
                     errorMsg = "Singer No. was duplicate.";
                     break;
+                case Singer1DoesNotExist:
+                    errorMsg = "The singer 1 does not exist";
+                    break;
+                case Singer2DoesNotExist:
+                    errorMsg = "The singer 2 does not exist";
+                    break;                    
                 case OriginalSingerNoIsEmpty:
                     errorMsg = "The original singer no was empty or null.";
                     break;

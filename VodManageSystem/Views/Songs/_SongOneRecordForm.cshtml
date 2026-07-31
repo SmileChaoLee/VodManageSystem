@@ -67,7 +67,7 @@
         <tr>
             <td class="labelname" colspan="4">
                 <span class="errorMsg" style="color:blue">Error Message:</span>
-                <span class="errorMsg" style="color:red">@ViewData["ErrorMessage"]</span>
+                <span id="SongErrorMessage" class="errorMsg" style="color:red">@ViewData["ErrorMessage"]</span>
             </td>
         </tr>
         <tr>
@@ -115,7 +115,7 @@
                     <input type="hidden" id="Singer1Id" asp-for="Singer1Id" />
                     <ul id="Singer1List" class="singer-list"></ul>
                 </div>
-                <span asp-validation-for="Singer1Id" class="text-danger"></span>
+                <span id="Singer1ValidationMessage" asp-validation-for="Singer1Id" class="text-danger"></span>
             </td>
             <td class="labelname">Singer 2</td>
             <td>
@@ -124,7 +124,7 @@
                     <input type="hidden" id="Singer2Id" asp-for="Singer2Id" />
                     <ul id="Singer2List" class="singer-list"></ul>
                 </div>
-                <span asp-validation-for="Singer2Id" class="text-danger"></span>
+                <span id="Singer2ValidationMessage" asp-validation-for="Singer2Id" class="text-danger"></span>
             </td>
         </tr>
         <tr>
@@ -213,6 +213,32 @@
     // Assuming ViewBag.SingerList contains SelectListItem objects with .Text and .Value
     const singerData = @Html.Raw(Json.Serialize(ViewBag.SingerList));
 
+    function setSingerValidationMessage(inputId, hiddenId, validationId) {
+        const input = document.getElementById(inputId);
+        const hidden = document.getElementById(hiddenId);
+        const validation = document.getElementById(validationId);
+        const errorMessage = document.getElementById('SongErrorMessage');
+
+        if (!input || !hidden || !validation) return false;
+
+        if (input.value.trim() && !hidden.value) {
+            validation.textContent = 'singer does not exist';
+            if (errorMessage) {
+                errorMessage.textContent = 'singer does not exist';
+            }
+            return true;
+        }
+
+        validation.textContent = '';
+        return false;
+    }
+
+    function validateSingerSelections() {
+        const singer1Invalid = setSingerValidationMessage('Singer1Search', 'Singer1Id', 'Singer1ValidationMessage');
+        const singer2Invalid = setSingerValidationMessage('Singer2Search', 'Singer2Id', 'Singer2ValidationMessage');
+        return !(singer1Invalid || singer2Invalid);
+    }
+
     function initSingerDropdown(inputId, listId, hiddenId) {
         const input = document.getElementById(inputId);
         const list = document.getElementById(listId);
@@ -255,6 +281,15 @@
             hidden.value = value;
             list.classList.remove('show');
             isDropdownOpen = false;
+            const validationId = inputId === 'Singer1Search' ? 'Singer1ValidationMessage' : 'Singer2ValidationMessage';
+            const validation = document.getElementById(validationId);
+            if (validation) {
+                validation.textContent = '';
+            }
+            const errorMessage = document.getElementById('SongErrorMessage');
+            if (errorMessage && errorMessage.textContent === 'singer does not exist') {
+                errorMessage.textContent = '';
+            }
             // Remove any existing selected class
             const items = list.querySelectorAll('.singer-item');
             items.forEach(i => i.classList.remove('selected'));
@@ -262,8 +297,10 @@
 
         // Event Listeners
         input.addEventListener('input', (e) => {
+            hidden.value = '';
             renderList(e.target.value);
             isDropdownOpen = true;
+            setSingerValidationMessage(inputId, hiddenId, inputId === 'Singer1Search' ? 'Singer1ValidationMessage' : 'Singer2ValidationMessage');
         });
 
         input.addEventListener('focus', () => {
@@ -298,5 +335,14 @@
     document.addEventListener('DOMContentLoaded', () => {
         initSingerDropdown('Singer1Search', 'Singer1List', 'Singer1Id');
         initSingerDropdown('Singer2Search', 'Singer2List', 'Singer2Id');
+
+        const form = document.getElementById('OneSongForm');
+        if (form) {
+            form.addEventListener('submit', (event) => {
+                if (!validateSingerSelections()) {
+                    event.preventDefault();
+                }
+            });
+        }
     });
 </script>
