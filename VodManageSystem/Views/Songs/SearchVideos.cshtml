@@ -1,0 +1,50 @@
+@using VodManageSystem.Models.U2bModels
+@model IEnumerable<YouTubeVideo>
+
+@{
+    ViewData["Title"] = "YouTube Search Results";
+}
+
+<h3 style="text-align:center">@ViewData["Title"]</h3>
+
+@if (!string.IsNullOrWhiteSpace(ViewBag.SearchQuery as string))
+{
+    <p style="margin-bottom:10px; color:#444;">Query: @ViewBag.SearchQuery</p>
+}
+
+@if (Model != null && Model.Any())
+{
+    <div style="display:flex; flex-wrap:wrap; gap:16px;">
+        @foreach (var video in Model)
+        {
+            <div style="width:260px; padding:10px; border:1px solid #ddd; border-radius:4px;">
+                @if (!string.IsNullOrWhiteSpace(video.Thumbnail))
+                {
+                    <img src="@video.Thumbnail" alt="@video.Title" style="width:100%; height:auto; border-radius:4px;" />
+                }
+                <div style="margin-top:8px; font-weight:bold;">@video.Title</div>
+                @if (!string.IsNullOrWhiteSpace(video.ChannelTitle))
+                {
+                    <div style="margin-top:4px; color:#666; font-size:12px;">@video.ChannelTitle</div>
+                }
+                <div style="margin-top:8px; font-size:12px; word-break:break-all;">
+                    <a href="https://www.youtube.com/watch?v=@video.Id" target="_blank">Open YouTube</a>
+                </div>
+                <div style="margin-top:8px;">
+                    <a class="crud" href="https://www.youtube.com/watch?v=@video.Id" target="_blank">Play</a>
+                    <form asp-action="AddVideo" asp-controller="Songs" method="post" style="display:inline-block; margin-left:6px;">
+                        <input type="hidden" name="selectedSongId" value="@ViewBag.SelectedSongId" />
+                        <input type="hidden" name="videoId" value="@video.Id" />
+                        <input type="hidden" name="thumbnailUrl" value="@video.Thumbnail" />
+                        <input type="hidden" name="song_state" value="@ViewBag.SongState" />
+                        <button class="crud" type="submit">Add</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>No videos found.</p>
+}

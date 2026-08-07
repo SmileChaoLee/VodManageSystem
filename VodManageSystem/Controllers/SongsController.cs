@@ -1,16 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 using VodManageSystem.Utilities;
 using VodManageSystem.Models;
 using VodManageSystem.Models.Dao;
 using VodManageSystem.Models.DataModels;
+using VodManageSystem.Models.U2bModels;
 using Microsoft.AspNetCore.Http;
 
 namespace VodManageSystem.Controllers
@@ -90,6 +93,158 @@ namespace VodManageSystem.Controllers
         }
 
         // Get
+        [HttpGet, ActionName("Search")]
+        public async Task<IActionResult> Search(int selectedSongId, string selectedSongNo, string song_state)
+        {
+            if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
+
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(song_state))
+            {
+                mState = new StateOfRequest("SongNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(song_state);
+            }
+
+            Song? selectedSong = null;
+            if (selectedSongId > 0)
+            {
+                selectedSong = await _songsManager.FindOneSongById(selectedSongId);
+            }
+            else if (!string.IsNullOrWhiteSpace(selectedSongNo))
+            {
+                selectedSong = await _songsManager.FindOneSongBySongNo(selectedSongNo);
+            }
+
+            List<Song> songs = _songsManager.GetOnePageOfSongs(mState);
+            ViewBag.SongState = JsonUtil.SetJsonStringFromObject(mState);
+            ViewBag.SelectedSongId = selectedSong?.Id ?? 0;
+            ViewBag.SelectedSongNo = selectedSong?.SongNo ?? string.Empty;
+            ViewBag.YouTubeVideos = new List<YouTubeVideo>();
+
+            List<YouTubeVideo> videos = new List<YouTubeVideo>();
+            if (selectedSong != null)
+            {
+                string query = BuildSearchQuery(selectedSong);
+                ViewBag.SearchQuery = query;
+                videos = await SearchVideosFromApiAsync(query);
+            }
+
+            ViewBag.SelectedSongId = selectedSong?.Id ?? 0;
+            ViewBag.SelectedSongNo = selectedSong?.SongNo ?? string.Empty;
+            ViewBag.SongState = JsonUtil.SetJsonStringFromObject(mState);
+
+            return View("SearchVideos", videos);
+        }
+
+        [HttpPost, ActionName("AddVideo")]
+        public async Task<IActionResult> AddVideo(int selectedSongId, string videoId, string thumbnailUrl, string song_state)
+        {
+            if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
+
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(song_state))
+            {
+                mState = new StateOfRequest("SongNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(song_state);
+            }
+
+            if (selectedSongId > 0 && !string.IsNullOrWhiteSpace(videoId))
+            {
+                int result = await _songsManager.UpdateOneSongVideoInfoById(selectedSongId, videoId, thumbnailUrl);
+                if (result == ErrorCodeModel.Succeeded)
+                {
+                    TempData["Message"] = "The YouTube video was attached to the selected song.";
+                }
+            }
+
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
+            return RedirectToAction(nameof(SongsList), new { song_state = temp_state });
+        }
+
+        private string BuildSearchQuery(Song song)
+        {
+            List<string> parts = new List<string>();
+
+            string singerName = song.Singer1?.SingNa?.Trim();
+            if (!string.IsNullOrWhiteSpace(singerName) && !IsUnknownName(singerName))
+            {
+                parts.Add($"\"{singerName}\"");
+            }
+
+            string songName = song.SongNa?.Trim();
+            if (!string.IsNullOrWhiteSpace(songName))
+            {
+                parts.Add($"\"{songName}\"");
+            }
+
+            if (parts.Count == 0)
+            {
+                return string.IsNullOrWhiteSpace(song.SongNo) ? string.Empty : song.SongNo;
+            }
+
+            return string.Join(" ", parts);
+        }
+
+        private static bool IsUnknownName(string name)
+        {
+            return string.Equals(name?.Trim(), "Unknown", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private async Task<List<YouTubeVideo>> SearchVideosFromApiAsync(string query)
+        {
+            List<YouTubeVideo> videos = new List<YouTubeVideo>();
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return videos;
+            }
+
+            try
+            {
+                Console.WriteLine("SongsController.SearchVideosFromApiAsync.query = " + query);
+                using var client = new HttpClient();
+                string encodedQuery = Uri.EscapeDataString(query);
+                Console.WriteLine("SongsController.SearchVideosFromApiAsync.encodedQuery = " + encodedQuery);
+                // using U2bController.SearchVideos2()
+                string requestUrl = $"{Request.Scheme}://{Request.Host}/api/u2b/2/{encodedQuery}";
+                Console.WriteLine("SongsController.SearchVideosFromApiAsync.requestUrl = " + requestUrl);
+                HttpResponseMessage response = await client.GetAsync(requestUrl);
+                if (!response.IsSuccessStatusCode)
+                {
+                    return videos;
+                }
+
+                string responseContent = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrWhiteSpace(responseContent))
+                {
+                    return videos;
+                }
+
+                JArray parsedVideos = JArray.Parse(responseContent);
+                foreach (JToken item in parsedVideos)
+                {
+                    videos.Add(new YouTubeVideo
+                    {
+                        Id = item["id"]?.ToString() ?? string.Empty,
+                        Title = item["title"]?.ToString() ?? string.Empty,
+                        Thumbnail = item["thumbnail"]?.ToString() ?? string.Empty,
+                        ChannelTitle = item["channelTitle"]?.ToString() ?? string.Empty
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("SongsController.SearchVideosFromApiAsync.error = " + ex.Message);
+            }
+
+            return videos;
+        }
+
         [HttpGet, ActionName("Find")]
         public IActionResult Find(string song_state)
         {

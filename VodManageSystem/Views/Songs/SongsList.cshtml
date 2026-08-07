@@ -1,11 +1,13 @@
 @using VodManageSystem.Utilities
 @using VodManageSystem.Models
+@using VodManageSystem.Models.U2bModels
 @using System
 
 @model IEnumerable<VodManageSystem.Models.DataModels.Song>
 
 @{
-    StateOfRequest songState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(ViewBag.SongState as string);
+    var songStateJson = ViewBag.SongState as string;
+    StateOfRequest songState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(songStateJson ?? "{}");
     DateTime endTime = DateTime.Now;
     double diff = ( (TimeSpan)(endTime - songState.StartTime) ).TotalMilliseconds;
     ViewData["Title"] = "Songs Management ---- elapsed time = " + diff;
@@ -18,16 +20,25 @@
         // use jQuery
         function toSubmit(action, sId, sNo) {
             var form = '#bodyForm';
-            if ( ($(form).length) && (action !== undefined) ) {
+            if ( ($(form).length) && (action !== undefined) ) {                
                 // if form with id="bodyForm" exist. jQuery the length is greater than 0.
-                if ( (action==='/Songs/Edit') || (action==='/Songs/Delete') || (action==='/Songs/Details') ) {
+                if ( (action==='/Songs/Edit') || (action=='/Songs/Details') || (action==='/Songs/Delete') || (action==='/Songs/Search') ) {
                     if ((sId !== undefined) && (sId !== 0) ) {
                         var song_state = getSongStateValue();
-                        song_state.OrgId = sId;
-                        song_state.OrgSongNo = sNo;
+                        if (action==='/Songs/Search') {
+                            $('input[name="selectedSongId"]').val(sId);
+                            $('input[name="selectedSongNo"]').val(sNo);
+                            $('input[name="song_state"]').val(JSON.stringify(song_state));
+                            var queryString = '?selectedSongId=' + encodeURIComponent(sId) + '&selectedSongNo=' + encodeURIComponent(sNo || '') + '&song_state=' + encodeURIComponent(JSON.stringify(song_state));
+                            window.open('/Songs/Search' + queryString, '_blank');
+                            return false;
+                        } else {
+                            song_state.OrgId = sId;
+                            song_state.OrgSongNo = sNo;
+                        }
                         $('input[name="song_state"]').val(JSON.stringify(song_state));
                     } else {
-                        // Edit, Delete, Details
+                        // Edit, Delete, Details, Search
                         alert("Please select one song!");
                         return false;   // cancel submit
                     }
@@ -100,6 +111,8 @@
 
 <form id="bodyForm" asp-area="" asp-controller="" asp-action="" method="get">
     <input type="hidden" name="song_state" value="@ViewBag.SongState" />
+    <input type="hidden" name="selectedSongId" value="" />
+    <input type="hidden" name="selectedSongNo" value="" />
 	<p>
         <button class="aboveTable" onclick="return toSubmit('/Songs/Find');">Find</button>&nbsp;
         <button class="aboveTable" onclick="return toSubmit('/Songs/Print');">Print</button>&nbsp;  
@@ -234,13 +247,14 @@
                 <td style="text-align:center;">
                     <button class="crud" onclick="return toSubmit('/Songs/Edit','@item.Id','@item.SongNo');">Edit</button>
                 </td>
-
                 <td style="text-align:center;">
-                    <button class="crud" onclick="toSubmit('/Songs/Details','@item.Id','@item.SongNo')">Details</button>
+                    <button class="crud" onclick="toSubmit('/Songs/Details','@item.Id','@item.SongNo')">Detail</button>
                 </td>
-
                 <td style="text-align:center;">
-                    <button class="crud" onclick="return toSubmit('/Songs/Delete','@item.Id','@item.SongNo');">Delete</button>
+                    <button class="crud" onclick="return toSubmit('/Songs/Delete','@item.Id','@item.SongNo');">Del</button>
+                </td>
+                <td style="text-align:center;">
+                    <button class="crud" onclick="return toSubmit('/Songs/Search','@item.Id','@item.SongNo');">S</button>
                 </td>
 
             </tr>

@@ -984,6 +984,41 @@ namespace VodManageSystem.Models.Dao
             return result;
         }
 
+        public async Task<int> UpdateOneSongVideoInfoById(int id, string videoId, string thumbnailUrl)
+        {
+            int result = ErrorCodeModel.ErrorBecauseBugs;
+            if (id == 0)
+            {
+                return result;
+            }
+
+            Song orgSong = await FindOneSongById(id);
+            if (orgSong == null)
+            {
+                result = ErrorCodeModel.OriginalSongNotExist;
+                return result;
+            }
+
+            orgSong.NMpeg = "00";
+            orgSong.MMpeg = "00";
+            orgSong.VodNo = videoId;
+            orgSong.Pathname = thumbnailUrl;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                result = ErrorCodeModel.Succeeded;
+            }
+            catch (DbUpdateException ex)
+            {
+                string msg = ex.ToString();
+                Console.WriteLine("Failed to update song video info: \n" + msg);
+                result = ErrorCodeModel.DatabaseError;
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// Updates the one song by identifier.
         /// </summary>
