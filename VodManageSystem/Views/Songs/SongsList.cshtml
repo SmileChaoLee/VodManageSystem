@@ -30,7 +30,8 @@
                             $('input[name="selectedSongNo"]').val(sNo);
                             $('input[name="song_state"]').val(JSON.stringify(song_state));
                             var queryString = '?selectedSongId=' + encodeURIComponent(sId) + '&selectedSongNo=' + encodeURIComponent(sNo || '') + '&song_state=' + encodeURIComponent(JSON.stringify(song_state));
-                            window.open('/Songs/Search' + queryString, '_blank');
+                            // window.open('/Songs/Search' + queryString, '_blank');    // create a new tab to open the search result
+                            window.location.href = action + queryString;
                             return false;
                         } else {
                             song_state.OrgId = sId;

@@ -96,8 +96,11 @@ namespace VodManageSystem.Controllers
         [HttpGet, ActionName("Search")]
         public async Task<IActionResult> Search(int selectedSongId, string selectedSongNo, string song_state)
         {
+            Console.WriteLine("SongsController.Search.selectedSongId = " + selectedSongId);
+            Console.WriteLine("SongsController.Search.selectedSongNo = " + selectedSongNo);
+            
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
-
+            
             StateOfRequest mState;
             if (string.IsNullOrEmpty(song_state))
             {
@@ -124,17 +127,13 @@ namespace VodManageSystem.Controllers
             ViewBag.SelectedSongNo = selectedSong?.SongNo ?? string.Empty;
             ViewBag.YouTubeVideos = new List<YouTubeVideo>();
 
-            List<YouTubeVideo> videos = new List<YouTubeVideo>();
+            List<YouTubeVideo> videos = [];
             if (selectedSong != null)
             {
                 string query = BuildSearchQuery(selectedSong);
                 ViewBag.SearchQuery = query;
                 videos = await SearchVideosFromApiAsync(query);
             }
-
-            ViewBag.SelectedSongId = selectedSong?.Id ?? 0;
-            ViewBag.SelectedSongNo = selectedSong?.SongNo ?? string.Empty;
-            ViewBag.SongState = JsonUtil.SetJsonStringFromObject(mState);
 
             return View("SearchVideos", videos);
         }
@@ -169,23 +168,31 @@ namespace VodManageSystem.Controllers
 
         private string BuildSearchQuery(Song song)
         {
-            List<string> parts = new List<string>();
+            Console.WriteLine("SongsController.BuildSearchQuery");
 
-            string singerName = song.Singer1?.SingNa?.Trim();
-            if (!string.IsNullOrWhiteSpace(singerName) && !IsUnknownName(singerName))
+            List<string> parts = [];
+
+            string temp = song.Singer1?.SingNa?.Trim();
+            if (!string.IsNullOrWhiteSpace(temp) && !IsUnknownName(temp))
             {
-                parts.Add($"\"{singerName}\"");
+                parts.Add($"\"{temp}\"");
             }
 
-            string songName = song.SongNa?.Trim();
-            if (!string.IsNullOrWhiteSpace(songName))
+            temp = song.Singer2?.SingNa?.Trim();
+            if (!string.IsNullOrWhiteSpace(temp) && !IsUnknownName(temp))
             {
-                parts.Add($"\"{songName}\"");
+                parts.Add($"\"{temp}\"");
+            }
+
+            temp = song.SongNa?.Trim();
+            if (!string.IsNullOrWhiteSpace(temp))
+            {
+                parts.Add($"\"{temp}\"");
             }
 
             if (parts.Count == 0)
             {
-                return string.IsNullOrWhiteSpace(song.SongNo) ? string.Empty : song.SongNo;
+                return string.Empty;
             }
 
             return string.Join(" ", parts);
@@ -198,7 +205,7 @@ namespace VodManageSystem.Controllers
 
         private async Task<List<YouTubeVideo>> SearchVideosFromApiAsync(string query)
         {
-            List<YouTubeVideo> videos = new List<YouTubeVideo>();
+            List<YouTubeVideo> videos = [];
             if (string.IsNullOrWhiteSpace(query))
             {
                 return videos;
@@ -297,13 +304,13 @@ namespace VodManageSystem.Controllers
             }
             song_na = song_na.Trim();
 
-            string lang_no = "";
+            string? lang_no = "";
             if (languageId >= 0)
             {
                 Language language = await _languagesManager.FindOneLanguageById(languageId);
                 if (language != null)
                 {
-                    lang_no = language.LangNo;
+                    lang_no = language.LangNo ?? string.Empty;
                 }
             }
 
@@ -342,23 +349,24 @@ namespace VodManageSystem.Controllers
             mState.QueryCondition = searchType;
             Console.WriteLine("Find.QueryCondition = " + mState.QueryCondition);
 
-            Song song = new Song(); // new object
-
-            song.SongNo = song_no;  // for order by "SongNo"
-
-            song.SongNa = song_na;  // for order by "SongNa"
-
-            song.VodNo = vod_no;    // for order by "VodNo"
-
-            song.Language = new Language(); // for order by "LangNo" + "SongNa"
+            Song song = new()
+            {
+                SongNo = song_no,  // for order by "SongNo"
+                SongNa = song_na,  // for order by "SongNa"
+                VodNo = vod_no,    // for order by "VodNo"
+                Language = new Language() // for order by "LangNo" + "SongNa"
+            }; // new object
             song.Language.LangNo = lang_no;
             song.SongNa = song_na;
 
-            song.Singer1 = new Singer();    // for order by "Singer1.SingNa"
-            song.Singer1.SingNa = sing_na1;
-
-            song.Singer2 = new Singer();    // for order by "Singer2.SingNa"
-            song.Singer2.SingNa = sing_na2;
+            song.Singer1 = new Singer
+            {
+                SingNa = sing_na1
+            };    // for order by "Singer1.SingNa"
+            song.Singer2 = new Singer
+            {
+                SingNa = sing_na2
+            };    // for order by "Singer2.SingNa"
 
             song.SNumWord = s_num_word;     // for order by song.SNumWord
             Console.WriteLine("Find.s_num_word = " + s_num_word);
