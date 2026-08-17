@@ -94,7 +94,7 @@ namespace VodManageSystem.Controllers
 
         // Get
         [HttpGet, ActionName("Search")]
-        public async Task<IActionResult> Search(int selectedSongId, string selectedSongNo, string song_state)
+        public async Task<IActionResult> SearchYouTubeVideos(int selectedSongId, string selectedSongNo, string song_state)
         {
             Console.WriteLine("SongsController.Search.selectedSongId = " + selectedSongId);
             Console.WriteLine("SongsController.Search.selectedSongNo = " + selectedSongNo);
@@ -187,7 +187,7 @@ namespace VodManageSystem.Controllers
             temp = song.SongNa?.Trim();
             if (!string.IsNullOrWhiteSpace(temp))
             {
-                parts.Add($"\"{temp}\"");
+                parts.Add($"{temp}");
             }
 
             if (parts.Count == 0)
