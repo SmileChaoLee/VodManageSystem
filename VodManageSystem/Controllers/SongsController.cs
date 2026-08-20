@@ -172,7 +172,7 @@ namespace VodManageSystem.Controllers
 
             List<string> parts = [];
 
-            string temp = song.Singer1?.SingNa?.Trim();
+            string? temp = song.Singer1?.SingNa?.Trim();
             if (!string.IsNullOrWhiteSpace(temp) && !IsUnknownName(temp))
             {
                 parts.Add($"\"{temp}\"");
@@ -554,7 +554,7 @@ namespace VodManageSystem.Controllers
                     // succeeded to add the song
                     // Song newSong = new Song();
                     mState.OrgId = song.Id;
-                    mState.OrgNo = song.SongNo;
+                    mState.OrgNo = song.SongNo ?? string.Empty;
                     mState.IsFirstAddRecord = false;    // becomes not the first add
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
@@ -601,12 +601,14 @@ namespace VodManageSystem.Controllers
             if (song == null)
             {
                 // go to previous view (List view)
-                return Redirect(HttpContext.Request.Headers["Referer"]);
+                string? refererUrl = HttpContext.Request.Headers.Referer.ToString();
+                return Redirect(refererUrl ?? string.Empty);
+                // return Redirect(HttpContext.Request.Headers["Referer"]);
             }
             else
             {
                 mState.OrgId = song.Id;
-                mState.OrgNo = song.SongNo;
+                mState.OrgNo = song.SongNo ?? string.Empty;
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                 List<SelectListItem> languageSelectList = _languagesManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
@@ -704,12 +706,14 @@ namespace VodManageSystem.Controllers
             if (song == null)
             {
                 // go to previous view (List view)
-                return Redirect(HttpContext.Request.Headers["Referer"]);
+                string? refererUrl = HttpContext.Request.Headers.Referer.ToString();
+                return Redirect(refererUrl ?? string.Empty);
+                // return Redirect(HttpContext.Request.Headers["Referer"]);
             }
             else
             {
                 mState.OrgId = id;
-                mState.OrgNo = song.SongNo;
+                mState.OrgNo = song.SongNo ?? string.Empty;
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                 List<SelectListItem> languageSelectList = _languagesManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
@@ -803,12 +807,14 @@ namespace VodManageSystem.Controllers
             if (song == null)
             {
                 // go to previous view (List view)
-                return Redirect(HttpContext.Request.Headers["Referer"]);
+                string? refererUrl = HttpContext.Request.Headers.Referer.ToString();
+                return Redirect(refererUrl ?? string.Empty);
+                // return Redirect(HttpContext.Request.Headers["Referer"]);
             }
             else
             {
                 mState.OrgId = song.Id;
-                mState.OrgNo = song.SongNo;
+                mState.OrgNo = song.SongNo ?? string.Empty;
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                 List<SelectListItem> languageSelectList = _languagesManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
