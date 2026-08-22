@@ -323,13 +323,13 @@ namespace VodManageSystem.Models.Dao
                     {
                         if (fieldName.Equals("SongNo", StringComparison.OrdinalIgnoreCase))
                         {
-                            songs = songs.Where(x => x.SongNo.Contains(fieldSubValue));
+                            songs = songs.Where(x => x.SongNo != null && x.SongNo.Contains(fieldSubValue));
                         }
                         else if (fieldName.Equals("SongNa", StringComparison.OrdinalIgnoreCase))
                         {
-                            songs = songs.Where(x => x.SongNa.Contains(fieldSubValue));
+                            songs = songs.Where(x => x.SongNa != null && x.SongNa.Contains(fieldSubValue));
                         }
-                        // Add more fields here as needed
+                        // Add more fields here as needed, use the string "VideoReady" for the u2bkaraoke Android App filter
                         else if (fieldName.Equals("VideoReady", StringComparison.OrdinalIgnoreCase)) {
                             Console.WriteLine("GetSongsIQueryableAddFilter.Video Ready Only");
                             songs = songs.Where( x => (x.MMpeg == "00") && (x.NMpeg == "00"));
