@@ -73,11 +73,13 @@ namespace VodManageSystem.Api.Controllers
         public async Task<string> Get(int id)
         {
             // get one song
+            Console.WriteLine("Get(int id) = " + id);
             Song song = await _songsManager.FindOneSongById(id);
             JObject jObject = JsonUtil.ConvertSongToJsonObject(song);
-            JObject returnJSON = new JObject();
-            returnJSON.Add("song", jObject);
-
+            JObject returnJSON = new JObject
+            {
+                { "song", jObject }
+            };
             return returnJSON.ToString();
         }
 
@@ -85,10 +87,8 @@ namespace VodManageSystem.Api.Controllers
         [HttpGet("{pageSize}/{pageNo}")]
         public string Get(int pageSize, int pageNo)
         {
-            Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}\")]");
-
+            Console.WriteLine("HttpGet[\"{pageSize}/{pageNo}\")]");
             JObject jObjectForAll = GetSongs(pageSize, pageNo, "");
-
             return jObjectForAll.ToString();
         }
 
@@ -97,9 +97,7 @@ namespace VodManageSystem.Api.Controllers
         public string Get(int pageSize, int pageNo, string orderBy)
         {
             Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}/{orderBy}\")]");
-
             JObject jObjectForAll = GetSongs(pageSize, pageNo, orderBy);
-
             return jObjectForAll.ToString();
         }
 
@@ -107,10 +105,18 @@ namespace VodManageSystem.Api.Controllers
         [HttpGet("{pageSize}/{pageNo}/{orderBy}/{numWords}")]
         public string Get(int pageSize, int pageNo, string orderBy, string numWords)
         {
-            Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}/{orderBy}/{numWords}\")]");
-
+            Console.WriteLine("HttpGet[\"{pageSize}/{pageNo}/{orderBy}/{numWords}\")]");
             JObject jObjectForAll = GetSongs(pageSize, pageNo, orderBy, numWords);
+            return jObjectForAll.ToString();
+        }
 
+
+        // GET api/values/10/1/"SongNo"/true/"愛你"    // filter is a part of song name
+        [HttpGet("{pageSize}/{pageNo}/{orderBy}/{useFilter}/{filter}")]
+        public string Get(int pageSize, int pageNo, string orderBy, bool useFilter, string filter)
+        {
+            Console.WriteLine("HttpGet[\"{pageSize}/{pageNo}/{orderBy}/{useFilter}/{filter}\")]");
+            JObject jObjectForAll = GetSongsWithFilter(pageSize, pageNo, orderBy, useFilter, filter);
             return jObjectForAll.ToString();
         }
 
@@ -157,11 +163,13 @@ namespace VodManageSystem.Api.Controllers
 
         private JObject GetSongs(int pageSize, int pageNo, string orderBy)
         {
+            Console.WriteLine("GetSongs.pageSize = " + pageSize + ", pageNo = " + pageNo + ", orderBy = " + orderBy);
             return GetSongs(pageSize, pageNo, orderBy, "");    
         }
 
         private JObject GetSongs(int pageSize, int pageNo, string orderBy, string numWords)
         {
+            Console.WriteLine("GetSongs.pageSize = " + pageSize + ", pageNo = " + pageNo + ", orderBy = " + orderBy + ", numWords = " + numWords);
             string orderByParam;
             if (string.IsNullOrEmpty(orderBy))
             {
@@ -172,18 +180,65 @@ namespace VodManageSystem.Api.Controllers
                 orderByParam = orderBy.Trim();
             }
 
-            StateOfRequest mState = new StateOfRequest(orderByParam);
-            mState.PageSize = pageSize;
-            mState.CurrentPageNo = pageNo;
+            StateOfRequest mState = new(orderByParam)
+            {
+                PageSize = pageSize,
+                CurrentPageNo = pageNo
+            };
             List<Song> songs = _songsManager.GetOnePageOfSongs(mState, numWords);
 
-            JObject jObjectForAll = new JObject();
-            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
-            jObjectForAll.Add("pageSize", mState.PageSize);
-            jObjectForAll.Add("totalRecords", mState.TotalRecords);
-            jObjectForAll.Add("totalPages", mState.TotalPages);
+            JObject jObjectForAll = new()
+            {
+                { "pageNo", mState.CurrentPageNo },
+                { "pageSize", mState.PageSize },
+                { "totalRecords", mState.TotalRecords },
+                { "totalPages", mState.TotalPages }
+            };
             JObject jObject;
-            JArray jArray = new JArray();
+            JArray jArray = new();
+            foreach (var song in songs)
+            {
+                jObject = JsonUtil.ConvertSongToJsonObject(song);
+                jArray.Add(jObject);
+            }
+            jObjectForAll.Add("songs", jArray);
+
+            return jObjectForAll;
+        }
+
+        private JObject GetSongsWithFilter(int pageSize, int pageNo, string orderBy, bool useFilter, string filter)
+        {
+            Console.WriteLine("GetSongsWithFilter.pageSize = " + pageSize + ", pageNo = " + pageNo + ", orderBy = " + orderBy + ", useFilter = " + useFilter + ", filter = " + filter);
+            string orderByParam;
+            if (string.IsNullOrEmpty(orderBy))
+            {
+                orderByParam = "";
+            }
+            else
+            {
+                orderByParam = orderBy.Trim();
+            }
+            StateOfRequest mState = new(orderByParam)
+            {
+                PageSize = pageSize,
+                CurrentPageNo = pageNo,                
+            };
+            if (useFilter)
+            {
+                Console.WriteLine("GetSongsWithFilter.useFilter = " + useFilter + ", filter = " + filter);
+                mState.QueryCondition = filter.Trim();
+            }
+            List<Song> songs = _songsManager.GetOnePageOfSongsWithFilter(mState);
+
+            JObject jObjectForAll = new()
+            {
+                { "pageNo", mState.CurrentPageNo },
+                { "pageSize", mState.PageSize },
+                { "totalRecords", mState.TotalRecords },
+                { "totalPages", mState.TotalPages }
+            };
+            JObject jObject;
+            JArray jArray = [];
             foreach (var song in songs)
             {
                 jObject = JsonUtil.ConvertSongToJsonObject(song);

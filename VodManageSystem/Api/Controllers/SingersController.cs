@@ -39,11 +39,13 @@ namespace VodManageSystem.Api.Controllers
 
             List<Singer> singers = _singersManager.GetAllSingers(mState);
 
-            JObject jObjectForAll = new JObject();
-            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
-            jObjectForAll.Add("pageSize", mState.PageSize);
-            jObjectForAll.Add("totalRecords", mState.TotalRecords);
-            jObjectForAll.Add("totalPages", mState.TotalPages);
+            JObject jObjectForAll = new()
+            {
+                { "pageNo", mState.CurrentPageNo },
+                { "pageSize", mState.PageSize },
+                { "totalRecords", mState.TotalRecords },
+                { "totalPages", mState.TotalPages }
+            };
             JObject jObject;
             JArray jArray = new JArray();
             foreach (var singer in singers)
@@ -80,11 +82,13 @@ namespace VodManageSystem.Api.Controllers
             mState.CurrentPageNo = pageNo;
             List<Singer> singers = _singersManager.GetOnePageOfSingers(mState);
 
-            JObject jObjectForAll = new JObject();
-            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
-            jObjectForAll.Add("pageSize", mState.PageSize);
-            jObjectForAll.Add("totalRecords", mState.TotalRecords);
-            jObjectForAll.Add("totalPages", mState.TotalPages);
+            JObject jObjectForAll = new()
+            {
+                { "pageNo", mState.CurrentPageNo },
+                { "pageSize", mState.PageSize },
+                { "totalRecords", mState.TotalRecords },
+                { "totalPages", mState.TotalPages }
+            };
             JObject jObject;
             JArray jArray = new JArray();
             foreach (var singer in singers)
@@ -115,18 +119,22 @@ namespace VodManageSystem.Api.Controllers
             }
 
 
-            StateOfRequest mState = new StateOfRequest(orderByParam);
-            mState.PageSize = pageSize;
-            mState.CurrentPageNo = pageNo;
+            StateOfRequest mState = new(orderByParam)
+            {
+                PageSize = pageSize,
+                CurrentPageNo = pageNo
+            };
             List<Singer> singers = _singersManager.GetOnePageOfSingers(mState);
 
-            JObject jObjectForAll = new JObject();
-            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
-            jObjectForAll.Add("pageSize", mState.PageSize);
-            jObjectForAll.Add("totalRecords", mState.TotalRecords);
-            jObjectForAll.Add("totalPages", mState.TotalPages);
+            JObject jObjectForAll = new()
+            {
+                { "pageNo", mState.CurrentPageNo },
+                { "pageSize", mState.PageSize },
+                { "totalRecords", mState.TotalRecords },
+                { "totalPages", mState.TotalPages }
+            };
             JObject jObject;
-            JArray jArray = new JArray();
+            JArray jArray = [];
             foreach (var singer in singers)
             {
                 jObject = JsonUtil.ConvertSingerToJsonObject(singer);
@@ -236,20 +244,24 @@ namespace VodManageSystem.Api.Controllers
                 filterParam = filter.Trim();
             }
 
-            StateOfRequest mState = new StateOfRequest(orderByParam);
-            mState.PageSize = pageSize;
-            mState.CurrentPageNo = pageNo;
-            mState.QueryCondition = filterParam;
+            StateOfRequest mState = new(orderByParam)
+            {
+                PageSize = pageSize,
+                CurrentPageNo = pageNo,
+                QueryCondition = filterParam
+            };
 
             List<Song> songs = _songsManager.GetOnePageOfSongsBySingerId(mState, id, true);
 
-            JObject jObjectForAll = new JObject();
-            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
-            jObjectForAll.Add("pageSize", mState.PageSize);
-            jObjectForAll.Add("totalRecords", mState.TotalRecords);
-            jObjectForAll.Add("totalPages", mState.TotalPages);
+            JObject jObjectForAll = new()
+            {
+                { "pageNo", mState.CurrentPageNo },
+                { "pageSize", mState.PageSize },
+                { "totalRecords", mState.TotalRecords },
+                { "totalPages", mState.TotalPages }
+            };
             JObject jObject;
-            JArray jArray = new JArray();
+            JArray jArray = [];
             foreach (var song in songs)
             {
                 jObject = JsonUtil.ConvertSongToJsonObject(song);
