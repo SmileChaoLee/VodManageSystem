@@ -17,7 +17,6 @@ namespace VodManageSystem.Api.Controllers
 
         private readonly string _apiKey;
         private readonly string? _apiKey2;
-        // AIzaSyCJcjgoycTtMruKZuzSGdExLv22WkNq7j4 for Smile-CShap-Testing
 
         public U2bController(IConfiguration configuration)
         {
