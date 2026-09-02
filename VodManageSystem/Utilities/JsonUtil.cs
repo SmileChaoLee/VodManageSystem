@@ -154,7 +154,7 @@ namespace VodManageSystem.Utilities
 
         public static JObject ConvertSingareaToJsonObject(Singarea singarea)
         {
-            JObject jObject = new JObject();
+            JObject jObject = [];
             if (singarea == null)
             {
                 return jObject;

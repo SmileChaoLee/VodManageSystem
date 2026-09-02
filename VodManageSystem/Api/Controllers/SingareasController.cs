@@ -33,17 +33,19 @@ namespace VodManageSystem.Api.Controllers
         public string Get()
         {
             // get all singarea
-            StateOfRequest mState = new StateOfRequest("AreaNo");
+            StateOfRequest mState = new("AreaNo");
             List<Singarea> singareas = _singareasManager.GetAllSingareas(mState);
 
             // Convert List<Singarea> to JSON array
-            JObject jObjectForAll = new JObject();
-            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
-            jObjectForAll.Add("pageSize", mState.PageSize);
-            jObjectForAll.Add("totalRecords", mState.TotalRecords);
-            jObjectForAll.Add("totalPages", mState.TotalPages);
+            JObject jObjectForAll = new()
+            {
+                { "pageNo", mState.CurrentPageNo },
+                { "pageSize", mState.PageSize },
+                { "totalRecords", mState.TotalRecords },
+                { "totalPages", mState.TotalPages }
+            };
             JObject jObject;
-            JArray jArray = new JArray();
+            JArray jArray = [];
             foreach (var singarea in singareas)
             {
                 jObject = JsonUtil.ConvertSingareaToJsonObject(singarea);
@@ -63,16 +65,18 @@ namespace VodManageSystem.Api.Controllers
         public string SingerTypes()
         {
             // get all singarea
-            StateOfRequest mState = new StateOfRequest("AreaNo");
+            StateOfRequest mState = new("AreaNo");
             List<Singarea> singareas = _singareasManager.GetAllSingareas(mState);
             // Convert List<Singarea> to JSON array
-            JObject jObjectForAll = new JObject();
-            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
-            jObjectForAll.Add("pageSize", mState.PageSize);
-            jObjectForAll.Add("totalRecords", mState.TotalRecords);
-            jObjectForAll.Add("totalPages", mState.TotalPages);
+            JObject jObjectForAll = new()
+            {
+                { "pageNo", mState.CurrentPageNo },
+                { "pageSize", mState.PageSize },
+                { "totalRecords", mState.TotalRecords },
+                { "totalPages", mState.TotalPages }
+            };
             JObject jObject;
-            JArray jArray = new JArray();
+            JArray jArray = [];
             foreach (var singarea in singareas)
             {
                 jObject = JsonUtil.ConvertSingerTypeToJsonObject(singarea, "0");
