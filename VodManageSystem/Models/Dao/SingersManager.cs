@@ -101,7 +101,7 @@ namespace VodManageSystem.Models.Dao
             }
         }
 
-        private IQueryable<Singer> GetAllSingersIQueryableWithoutFilter(StateOfRequest mState)
+        private IQueryable<Singer>? GetAllSingersIQueryableWithoutFilter(StateOfRequest mState)
         {
             if (mState == null)
             {
@@ -116,7 +116,7 @@ namespace VodManageSystem.Models.Dao
 
             IQueryable<Singer> totalSingers = _context.Singer.Include(x => x.Singarea);
 
-            IQueryable<Singer> singers;
+            IQueryable<Singer>? singers;
 
             string orderByParam = mState.OrderBy.Trim();
             if (orderByParam == "")

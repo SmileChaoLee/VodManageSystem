@@ -76,10 +76,14 @@ namespace VodManageSystem.Api.Controllers
         public string Get(int pageSize, int pageNo)
         {
             Console.WriteLine("HttpGet[\"{pageSize}/{pageNo}\")]");
+            return Get(pageSize, pageNo, "");
 
-            StateOfRequest mState = new StateOfRequest("");
-            mState.PageSize = pageSize;
-            mState.CurrentPageNo = pageNo;
+            /*
+            StateOfRequest mState = new("")
+            {
+                PageSize = pageSize,
+                CurrentPageNo = pageNo
+            };
             List<Singer> singers = _singersManager.GetOnePageOfSingers(mState);
 
             JObject jObjectForAll = new()
@@ -99,15 +103,17 @@ namespace VodManageSystem.Api.Controllers
             jObjectForAll.Add("singers", jArray);
 
             return jObjectForAll.ToString();
+            */
         }
 
         // GET api/values/10/1/orderBy
         [HttpGet("{pageSize}/{pageNo}/{orderBy}")]
         public string Get(int pageSize, int pageNo, string orderBy) {
             Console.WriteLine("HttpGet[\"{pageSize}/{pageNo}/{orderBy}\")]");
+            return Get(pageSize, pageNo, orderBy, "");
 
+            /*
             // orderBy is either "SingNo" or "SingNa"
-
             string orderByParam = orderBy.Trim();
             if (string.IsNullOrEmpty(orderBy))
             {
@@ -117,12 +123,63 @@ namespace VodManageSystem.Api.Controllers
             {
                 orderByParam = orderBy.Trim();
             }
-
-
             StateOfRequest mState = new(orderByParam)
             {
                 PageSize = pageSize,
                 CurrentPageNo = pageNo
+            };
+            List<Singer> singers = _singersManager.GetOnePageOfSingers(mState);
+
+            JObject jObjectForAll = new()
+            {
+                { "pageNo", mState.CurrentPageNo },
+                { "pageSize", mState.PageSize },
+                { "totalRecords", mState.TotalRecords },
+                { "totalPages", mState.TotalPages }
+            };
+            JObject jObject;
+            JArray jArray = [];
+            foreach (var singer in singers)
+            {
+                jObject = JsonUtil.ConvertSingerToJsonObject(singer);
+                jArray.Add(jObject);
+            }
+            jObjectForAll.Add("singers", jArray);
+
+            return jObjectForAll.ToString();
+            */
+        }
+
+        // GET api/values/10/1/orderBy
+        [HttpGet("{pageSize}/{pageNo}/{orderBy}/{filter}")]
+        public string Get(int pageSize, int pageNo, string orderBy, string filter) {
+            Console.WriteLine("HttpGet[\"{pageSize}/{pageNo}/{orderBy}/{filter}\")]");
+
+            // orderBy is either "SingNo" or "SingNa"
+
+            string orderByParam;
+            if (string.IsNullOrEmpty(orderBy))
+            {
+                orderByParam = "";
+            }
+            else
+            {
+                orderByParam = orderBy.Trim();
+            }
+            string filterParam;
+            if (string.IsNullOrEmpty(filter))
+            {
+                filterParam = "";
+            }
+            else
+            {
+                filterParam = filter.Trim();
+            }
+            StateOfRequest mState = new(orderByParam)
+            {
+                PageSize = pageSize,
+                CurrentPageNo = pageNo,
+                QueryCondition = filterParam
             };
             List<Singer> singers = _singersManager.GetOnePageOfSingers(mState);
 
