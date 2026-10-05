@@ -42,19 +42,23 @@ namespace VodManageSystem.Api.Controllers
         {
             Console.WriteLine("Get all songs.");
 
-            StateOfRequest mState = new StateOfRequest("SongNo");
-            mState.CurrentPageNo = 1;
-            mState.PageSize = 50;
+            StateOfRequest mState = new("SongNo")
+            {
+                CurrentPageNo = 1,
+                PageSize = 10
+            };
 
             // List<Song> songs = await _songsManager.GetAllSongs(mState);
             // get the first 50 songs
             List<Song> songs = _songsManager.GetOnePageOfSongs(mState);
 
-            JObject jObjectForAll = new JObject();
-            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
-            jObjectForAll.Add("pageSize", mState.PageSize);
-            jObjectForAll.Add("totalRecords", mState.TotalRecords);
-            jObjectForAll.Add("totalPages", mState.TotalPages);
+            JObject jObjectForAll = new()
+            {
+                { "pageNo", mState.CurrentPageNo },
+                { "pageSize", mState.PageSize },
+                { "totalRecords", mState.TotalRecords },
+                { "totalPages", mState.TotalPages }
+            };
             JObject jObject;
             JArray jArray = new JArray();
             for (int i = 0; i < songs.Count; i++)
@@ -208,7 +212,8 @@ namespace VodManageSystem.Api.Controllers
 
         private JObject GetSongsWithFilter(int pageSize, int pageNo, string orderBy, bool useFilter, string filter)
         {
-            Console.WriteLine("GetSongsWithFilter.pageSize = " + pageSize + ", pageNo = " + pageNo + ", orderBy = " + orderBy + ", useFilter = " + useFilter + ", filter = " + filter);
+            string logStr = $"GetSongsWithFilter";
+            Console.WriteLine($"{logStr}.pageSize = {pageSize}, pageNo = {pageNo}, orderBy = {orderBy}, useFilter = {useFilter}, filter = {filter}");
             string orderByParam;
             if (string.IsNullOrEmpty(orderBy))
             {
@@ -225,10 +230,13 @@ namespace VodManageSystem.Api.Controllers
             };
             if (useFilter)
             {
-                Console.WriteLine("GetSongsWithFilter.useFilter = " + useFilter + ", filter = " + filter);
                 mState.QueryCondition = filter.Trim();
+            } else
+            {
+                mState.QueryCondition = "";
             }
             List<Song> songs = _songsManager.GetOnePageOfSongsWithFilter(mState);
+            Console.WriteLine($"{logStr}.songs.Count = {songs.Count}");
 
             JObject jObjectForAll = new()
             {
