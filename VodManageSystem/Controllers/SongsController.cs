@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using VodManageSystem.Utilities;
@@ -94,7 +91,7 @@ namespace VodManageSystem.Controllers
 
         // Get
         [HttpGet, ActionName("Search")]
-        public async Task<IActionResult> SearchYouTubeVideos(int selectedSongId, string selectedSongNo, string song_state)
+        public async Task<IActionResult> SearchYouTubeVideos(int selectedSongId, string selectedSongNo, string song_state, string? pageToken = null)
         {
             Console.WriteLine("SongsController.Search.selectedSongId = " + selectedSongId);
             Console.WriteLine("SongsController.Search.selectedSongNo = " + selectedSongNo);
@@ -125,14 +122,13 @@ namespace VodManageSystem.Controllers
             ViewBag.SongState = JsonUtil.SetJsonStringFromObject(mState);
             ViewBag.SelectedSongId = selectedSong?.Id ?? 0;
             ViewBag.SelectedSongNo = selectedSong?.SongNo ?? string.Empty;
-            ViewBag.YouTubeVideos = new List<YouTubeVideo>();
-
-            List<YouTubeVideo> videos = [];
+            ViewBag.SelectedSongName = selectedSong?.SongNa ?? string.Empty;
+            YTVideoList videos = new();
             if (selectedSong != null)
             {
                 string query = BuildSearchQuery(selectedSong);
                 ViewBag.SearchQuery = query;
-                videos = await SearchVideosFromApiAsync(query);
+                videos = await SearchVideosFromApiAsync(query, pageToken);
             }
 
             return View("SearchVideos", videos);
@@ -166,7 +162,7 @@ namespace VodManageSystem.Controllers
             return RedirectToAction(nameof(SongsList), new { song_state = temp_state });
         }
 
-        private string BuildSearchQuery(Song song)
+        private static string BuildSearchQuery(Song song)
         {
             Console.WriteLine("SongsController.BuildSearchQuery");
 
@@ -175,7 +171,7 @@ namespace VodManageSystem.Controllers
             string? temp = song.Singer1?.SingNa?.Trim();
             if (!string.IsNullOrWhiteSpace(temp) && !IsUnknownName(temp))
             {
-                parts.Add($"\"{temp}\"");
+                parts.Add($"{temp}");
             }
 
             temp = song.Singer2?.SingNa?.Trim();
@@ -203,9 +199,9 @@ namespace VodManageSystem.Controllers
             return string.Equals(name?.Trim(), "Unknown", StringComparison.OrdinalIgnoreCase);
         }
 
-        private async Task<List<YouTubeVideo>> SearchVideosFromApiAsync(string query)
+        private async Task<YTVideoList> SearchVideosFromApiAsync(string query, string? pageToken)
         {
-            List<YouTubeVideo> videos = [];
+            YTVideoList videos = new();
             if (string.IsNullOrWhiteSpace(query))
             {
                 return videos;
@@ -218,7 +214,8 @@ namespace VodManageSystem.Controllers
                 string encodedQuery = Uri.EscapeDataString(query);
                 Console.WriteLine("SongsController.SearchVideosFromApiAsync.encodedQuery = " + encodedQuery);
                 // using U2bController.SearchVideos2()
-                string requestUrl = $"{Request.Scheme}://{Request.Host}/api/u2b/2/{encodedQuery}";
+                string encodedToken = string.IsNullOrWhiteSpace(pageToken) ? "first" : Uri.EscapeDataString(pageToken);
+                string requestUrl = $"{Request.Scheme}://{Request.Host}/api/u2b/2/{encodedQuery}/{encodedToken}";
                 Console.WriteLine("SongsController.SearchVideosFromApiAsync.requestUrl = " + requestUrl);
                 HttpResponseMessage response = await client.GetAsync(requestUrl);
                 if (!response.IsSuccessStatusCode)
@@ -232,10 +229,11 @@ namespace VodManageSystem.Controllers
                     return videos;
                 }
 
-                JArray parsedVideos = JArray.Parse(responseContent);
-                foreach (JToken item in parsedVideos)
+                JObject parsed = JObject.Parse(responseContent);
+                videos.NextPageToken = parsed["nextPageToken"]?.ToString() ?? string.Empty;
+                foreach (JToken item in parsed["ytVideos"] ?? new JArray())
                 {
-                    videos.Add(new YouTubeVideo
+                    videos.YTVideos.Add(new YouTubeVideo
                     {
                         Id = item["id"]?.ToString() ?? string.Empty,
                         Title = item["title"]?.ToString() ?? string.Empty,

@@ -1,5 +1,5 @@
 @using VodManageSystem.Models.U2bModels
-@model IEnumerable<YouTubeVideo>
+@model YTVideoList
 
 @{
     ViewData["Title"] = "YouTube Search Results";
@@ -7,15 +7,26 @@
 
 <h3 style="text-align:center">@ViewData["Title"]</h3>
 
-@if (!string.IsNullOrWhiteSpace(ViewBag.SearchQuery as string))
-{
-    <p style="margin-bottom:10px; color:#444;">Query: @ViewBag.SearchQuery</p>
-}
+<div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+    @if (!string.IsNullOrWhiteSpace(ViewBag.SearchQuery as string))
+    {
+        <p style="margin:0; color:#444;">Query: @ViewBag.SearchQuery</p>
+    }
+    @if (Model != null && !string.IsNullOrWhiteSpace(Model.NextPageToken))
+    {
+        <form asp-action="Search" asp-controller="Songs" method="get" style="margin:0;">
+            <input type="hidden" name="selectedSongId" value="@ViewBag.SelectedSongId" />
+            <input type="hidden" name="song_state" value="@ViewBag.SongState" />
+            <input type="hidden" name="pageToken" value="@Model.NextPageToken" />
+            <button class="crud" type="submit">Next Search</button>
+        </form>
+    }
+</div>
 
-@if (Model != null && Model.Any())
+@if (Model != null && Model.YTVideos.Any())
 {
     <div style="display:flex; flex-wrap:wrap; gap:16px;">
-        @foreach (var video in Model)
+        @foreach (var video in Model.YTVideos)
         {
             <div style="width:260px; padding:10px; border:1px solid #ddd; border-radius:4px;">
                 @if (!string.IsNullOrWhiteSpace(video.Thumbnail))

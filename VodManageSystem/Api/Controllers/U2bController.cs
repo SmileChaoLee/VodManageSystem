@@ -76,10 +76,11 @@ namespace VodManageSystem.Api.Controllers
 
         // URL path will be: GET api/u2b/2/query        
         [HttpGet("{secondApiKey}/{queryString}/{pageToken}")]
-        public async Task<IActionResult> SearchVideos2(string secondApiKey, string queryString, string? pageToken = null)
+        public async Task<IActionResult> SearchVideos2(string secondApiKey, string queryString, string pageToken)
         {
             Console.WriteLine("U2bController.SearchVideos2.secondApiKey = " + secondApiKey);
             Console.WriteLine("U2bController.SearchVideos2.queryString = " + queryString);
+            Console.WriteLine("U2bController.SearchVideos2.pageToken = " + pageToken);
             if (string.IsNullOrWhiteSpace(queryString))
             {
                 return BadRequest("Search query cannot be empty.");
