@@ -161,8 +161,13 @@ namespace VodManageSystem.Api.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<int> Delete(int id)
         {
+            Console.WriteLine($"HttpDelete[\"{id}\")]");
+            int result = await _songsManager.DeleteOneSongById(id);
+            Console.WriteLine($"result = {result}");
+            // 1 = deleted, -1 = failed (same convention as Put)
+            return result == ErrorCodeModel.Succeeded ? 1 : -1;
         }
 
         private JObject GetSongs(int pageSize, int pageNo, string orderBy)
