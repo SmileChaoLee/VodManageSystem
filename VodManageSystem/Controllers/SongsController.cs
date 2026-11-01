@@ -191,7 +191,7 @@ namespace VodManageSystem.Controllers
             temp = song.Singer2?.SingNa?.Trim();
             if (!string.IsNullOrWhiteSpace(temp) && !IsUnknownName(temp))
             {
-                parts.Add($"\"{temp}\"");
+                parts.Add($"{temp}");
             }
 
             temp = song.SongNa?.Trim();
