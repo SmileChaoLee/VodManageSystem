@@ -90,11 +90,25 @@ namespace VodManageSystem.Controllers
         }
 
         // Get
-        [HttpGet, ActionName("Search")]
-        public async Task<IActionResult> SearchYouTubeVideos(int selectedSongId, string selectedSongNo, string song_state, string? pageToken = null)
+        [HttpGet, ActionName("SearchYTV1")]
+        public async Task<IActionResult> SearchYTV1(int selectedSongId, string selectedSongNo, string song_state, string? pageToken = null)
         {
-            Console.WriteLine("SongsController.Search.selectedSongId = " + selectedSongId);
-            Console.WriteLine("SongsController.Search.selectedSongNo = " + selectedSongNo);
+            Console.WriteLine("SongsController.SearchYTV1");
+            return await SearchYouTubeVideos(1, selectedSongId, selectedSongNo, song_state, pageToken);
+        }
+
+        // Get
+        [HttpGet, ActionName("SearchYTV2")]
+        public async Task<IActionResult> SearchYTV2(int selectedSongId, string selectedSongNo, string song_state, string? pageToken = null)
+        {
+            Console.WriteLine("SongsController.SearchYTV2");
+            return await SearchYouTubeVideos(2, selectedSongId, selectedSongNo, song_state, pageToken);
+        }
+
+        private async Task<IActionResult> SearchYouTubeVideos(int whichApi, int selectedSongId, string selectedSongNo, string song_state, string? pageToken = null)
+        {
+            Console.WriteLine("SongsController.SearchYouTubeVideos.selectedSongId = " + selectedSongId);
+            Console.WriteLine("SongsController.SearchYouTubeVideos.selectedSongNo = " + selectedSongNo);
             
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
             
@@ -128,7 +142,7 @@ namespace VodManageSystem.Controllers
             {
                 string query = BuildSearchQuery(selectedSong);
                 ViewBag.SearchQuery = query;
-                videos = await SearchVideosFromApiAsync(query, pageToken);
+                videos = await SearchVideosFromApiAsync(whichApi, query, pageToken);
             }
 
             return View("SearchVideos", videos);
@@ -199,7 +213,7 @@ namespace VodManageSystem.Controllers
             return string.Equals(name?.Trim(), "Unknown", StringComparison.OrdinalIgnoreCase);
         }
 
-        private async Task<YTVideoList> SearchVideosFromApiAsync(string query, string? pageToken)
+        private async Task<YTVideoList> SearchVideosFromApiAsync(int whichApi, string query, string? pageToken)
         {
             YTVideoList videos = new();
             if (string.IsNullOrWhiteSpace(query))
@@ -209,17 +223,26 @@ namespace VodManageSystem.Controllers
 
             try
             {
+                Console.WriteLine("SongsController.SearchVideosFromApiAsync.whichApi = " + whichApi);
                 Console.WriteLine("SongsController.SearchVideosFromApiAsync.query = " + query);
                 using var client = new HttpClient();
                 string encodedQuery = Uri.EscapeDataString(query);
                 Console.WriteLine("SongsController.SearchVideosFromApiAsync.encodedQuery = " + encodedQuery);
                 // using U2bController.SearchVideos2()
                 string encodedToken = string.IsNullOrWhiteSpace(pageToken) ? "first" : Uri.EscapeDataString(pageToken);
-                string requestUrl = $"{Request.Scheme}://{Request.Host}/api/u2b/2/{encodedQuery}/{encodedToken}";
+                // Default request URL uses the first API key
+                string requestUrl = $"{Request.Scheme}://{Request.Host}/api/u2b/{encodedQuery}/{encodedToken}";
+                if (whichApi != 1)
+                {
+                    Console.WriteLine("SongsController.SearchVideosFromApiAsync.use second API key");
+                    requestUrl = $"{Request.Scheme}://{Request.Host}/api/u2b/2/{encodedQuery}/{encodedToken}";    
+                }
                 Console.WriteLine("SongsController.SearchVideosFromApiAsync.requestUrl = " + requestUrl);
                 HttpResponseMessage response = await client.GetAsync(requestUrl);
                 if (!response.IsSuccessStatusCode)
                 {
+                    ViewBag.SearchError = "Video search failed. Check the server logs for details.";
+                    Console.WriteLine($"SongsController.SearchVideosFromApiAsync.status = {(int)response.StatusCode} {response.StatusCode}");
                     return videos;
                 }
 
@@ -245,6 +268,7 @@ namespace VodManageSystem.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine("SongsController.SearchVideosFromApiAsync.error = " + ex.Message);
+                ViewBag.SearchError = "Video search failed. Check the server logs for details.";
             }
 
             return videos;

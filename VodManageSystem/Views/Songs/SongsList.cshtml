@@ -1,6 +1,5 @@
 @using VodManageSystem.Utilities
 @using VodManageSystem.Models
-@using VodManageSystem.Models.U2bModels
 @using System
 
 @model IEnumerable<VodManageSystem.Models.DataModels.Song>
@@ -22,15 +21,14 @@
             var form = '#bodyForm';
             if ( ($(form).length) && (action !== undefined) ) {                
                 // if form with id="bodyForm" exist. jQuery the length is greater than 0.
-                if ( (action==='/Songs/Edit') || (action=='/Songs/Details') || (action==='/Songs/Delete') || (action==='/Songs/Search') ) {
+                if ( (action==='/Songs/Edit') || (action==='/Songs/Details') || (action==='/Songs/Delete') || (action==='/Songs/SearchYTV1') || (action==='/Songs/SearchYTV2') ) {
                     if ((sId !== undefined) && (sId !== 0) ) {
-                        var song_state = getSongStateValue();
-                        if (action==='/Songs/Search') {
+                        var song_state = getSongStateValue();                    
+                        if (action==='/Songs/SearchYTV1' || action==='/Songs/SearchYTV2') {
                             $('input[name="selectedSongId"]').val(sId);
                             $('input[name="selectedSongNo"]').val(sNo);
                             $('input[name="song_state"]').val(JSON.stringify(song_state));
-                            var queryString = '?selectedSongId=' + encodeURIComponent(sId) + '&selectedSongNo=' + encodeURIComponent(sNo || '') + '&song_state=' + encodeURIComponent(JSON.stringify(song_state));
-                            // window.open('/Songs/Search' + queryString, '_blank');    // create a new tab to open the search result
+                            var queryString = '?selectedSongId=' + encodeURIComponent(sId) + '&selectedSongNo=' + encodeURIComponent(sNo || '') + '&song_state=' + encodeURIComponent(JSON.stringify(song_state));                            
                             window.location.href = action + queryString;
                             return false;
                         } else {
@@ -255,7 +253,10 @@
                     <button class="crud" onclick="return toSubmit('/Songs/Delete','@item.Id','@item.SongNo');">Del</button>
                 </td>
                 <td style="text-align:center;">
-                    <button class="crud" onclick="return toSubmit('/Songs/Search','@item.Id','@item.SongNo');">S</button>
+                    <button class="crud" onclick="return toSubmit('/Songs/SearchYTV1','@item.Id','@item.SongNo');">U2B</button>
+                </td>
+                <td style="text-align:center;">
+                    <button class="crud" onclick="return toSubmit('/Songs/SearchYTV2','@item.Id','@item.SongNo');">S</button>
                 </td>
 
             </tr>

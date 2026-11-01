@@ -3,27 +3,43 @@
 
 @{
     ViewData["Title"] = "YouTube Search Results";
+    var searchAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "SearchYTV1";
 }
+
+<link rel="stylesheet" style="text/css" href="~/css/DataManageTableStyle.css" />
 
 <h3 style="text-align:center">@ViewData["Title"]</h3>
 
-<div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+<div style="display:flex; align-items:center; gap:12px; margin-bottom:10px; flex-wrap:wrap;">
+    <form asp-action="SongsList" asp-controller="Songs" method="get" style="margin:0;">
+        <input type="hidden" name="song_state" value="@ViewBag.SongState" />
+        <button class="aboveTable" type="submit">Back to Songs</button>
+    </form>
+    @if (!string.IsNullOrWhiteSpace(ViewBag.SelectedSongName as string))
+    {
+        <p style="margin:0; color:#444;">Song: @ViewBag.SelectedSongNo - @ViewBag.SelectedSongName</p>
+    }
     @if (!string.IsNullOrWhiteSpace(ViewBag.SearchQuery as string))
     {
         <p style="margin:0; color:#444;">Query: @ViewBag.SearchQuery</p>
     }
     @if (Model != null && !string.IsNullOrWhiteSpace(Model.NextPageToken))
     {
-        <form asp-action="Search" asp-controller="Songs" method="get" style="margin:0;">
+        <form asp-action="@searchAction" asp-controller="Songs" method="get" style="margin:0;">
             <input type="hidden" name="selectedSongId" value="@ViewBag.SelectedSongId" />
+            <input type="hidden" name="selectedSongNo" value="@ViewBag.SelectedSongNo" />
             <input type="hidden" name="song_state" value="@ViewBag.SongState" />
             <input type="hidden" name="pageToken" value="@Model.NextPageToken" />
-            <button class="crud" type="submit">Next Search</button>
+            <button class="aboveTable" type="submit">Next Search</button>
         </form>
     }
 </div>
 
-@if (Model != null && Model.YTVideos.Any())
+@if (!string.IsNullOrWhiteSpace(ViewBag.SearchError as string))
+{
+    <p>@ViewBag.SearchError</p>
+}
+else if (Model != null && Model.YTVideos.Any())
 {
     <div style="display:flex; flex-wrap:wrap; gap:16px;">
         @foreach (var video in Model.YTVideos)
