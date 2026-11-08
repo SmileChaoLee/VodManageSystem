@@ -333,11 +333,21 @@ namespace VodManageSystem.Models.Dao
         public List<Song> GetOnePageOfSongs(StateOfRequest mState)
         {
             Console.WriteLine("GetOnePageOfSongs");
-            return GetOnePageOfSongs(mState, "");
+            return GetOnePageOfSongs(mState, "", null);
+        }
+
+        public List<Song> GetOnePageOfSongs(StateOfRequest mState, HashSet<string> invalidVideoIds)
+        {
+            return GetOnePageOfSongs(mState, "", invalidVideoIds);
         }
 
         // filter with number of words, this functionalitry is only for WebApi so far
         public List<Song> GetOnePageOfSongs(StateOfRequest mState, string numWords)
+        {
+            return GetOnePageOfSongs(mState, numWords, null);
+        }
+
+        private List<Song> GetOnePageOfSongs(StateOfRequest mState, string numWords, HashSet<string>? invalidVideoIds)
         {            
             string logStr = "GetOnePageOfSongs";
             Console.WriteLine($"{logStr}.numWords = {numWords}");
@@ -362,6 +372,8 @@ namespace VodManageSystem.Models.Dao
                 Console.WriteLine($"{logStr}.totalSongs = null");
                 return [];
             }
+
+            totalSongs = ApplyInvalidVideoIdFilter(totalSongs, mState, invalidVideoIds);
 
             if (!string.IsNullOrEmpty(numWords)) {
                 int number;
@@ -760,7 +772,7 @@ namespace VodManageSystem.Models.Dao
         /// <param name="mState">Song state.</param>
         /// <param name="song">Song.</param>
         /// <param name="id">Identifier.</param>
-        public List<Song> FindOnePageOfSongsForOneSong(StateOfRequest mState, Song song, int id)
+        public List<Song> FindOnePageOfSongsForOneSong(StateOfRequest mState, Song song, int id, HashSet<string>? invalidVideoIds = null)
         {
             if ((mState == null) || (song == null))
             {
@@ -778,6 +790,8 @@ namespace VodManageSystem.Models.Dao
             {
                 return new List<Song>();
             }
+
+            totalSongs = ApplyInvalidVideoIdFilter(totalSongs, mState, invalidVideoIds);
 
             IQueryable<Song> songsTempList = null;
         
@@ -926,6 +940,17 @@ namespace VodManageSystem.Models.Dao
             UpdateStateOfRequest(mState, songs.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages, true);
 
             return songs;
+        }
+
+        private static IQueryable<Song> ApplyInvalidVideoIdFilter(IQueryable<Song> songs, StateOfRequest mState, HashSet<string>? invalidVideoIds)
+        {
+            if (!mState.InvalidVideoIdFilter || invalidVideoIds == null)
+            {
+                return songs;
+            }
+
+            return songs.Where(song => song.NMpeg == "00" && song.MMpeg == "00" &&
+                (song.VodNo == null || song.VodNo == "" || invalidVideoIds.Contains(song.VodNo)));
         }
 
         /// <summary>

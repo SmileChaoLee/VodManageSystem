@@ -32,6 +32,34 @@ button.aboveTable:hover {
     color: Red;
 }
 
+.video-id-processing {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 5px;
+    color: red;
+    font-weight: bold;
+}
+
+.video-id-processing[hidden] {
+    display: none;
+}
+
+.video-id-spinner {
+    width: 12px;
+    height: 12px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: video-id-spin 0.7s linear infinite;
+}
+
+@keyframes video-id-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 button.crud {
     font-weight: bold;
     color: black;

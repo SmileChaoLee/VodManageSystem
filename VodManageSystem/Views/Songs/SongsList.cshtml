@@ -51,6 +51,33 @@
             }
         }
 
+        function toggleInvalidVideoIdFilter(button) {
+            var filterIsOn = @(songState.InvalidVideoIdFilter ? "true" : "false");
+            button.disabled = true;
+
+            var processingIndicator = document.getElementById('invalidVideoIdProcessing');
+            if (!filterIsOn) {
+                button.style.backgroundColor = 'red';
+                button.style.color = 'white';
+                button.setAttribute('aria-busy', 'true');
+                processingIndicator.hidden = false;
+            }
+
+            window.setTimeout(function () {
+                if (!toSubmit('/Songs/ToggleInvalidVideoId')) {
+                    button.disabled = false;
+                    button.removeAttribute('aria-busy');
+                    processingIndicator.hidden = true;
+                    if (!filterIsOn) {
+                        button.style.backgroundColor = '';
+                        button.style.color = '';
+                    }
+                }
+            }, 0);
+
+            return false;
+        }
+
         function orderBySubmit(orderBy) {
             if (orderBy !== undefined) {
                 var form = '#bodyForm';
@@ -104,7 +131,7 @@
     </script>
 }
 
-<link rel="stylesheet" style="text/css" href="~/css/DataManageTableStyle.css" />
+<link rel="stylesheet" style="text/css" href="~/css/DataManageTableStyle.css" asp-append-version="true" />
 
 <h3 style="text-align:center">@ViewData["Title"]</h3>
 
@@ -119,6 +146,14 @@
         <button class="aboveTable" onclick="return toSubmit('/Songs/LastPage');">Last Page</button>&nbsp; 
         <button class="aboveTable" onclick="return toSubmit('/Songs/PreviousPage');">Previous Page</button>&nbsp;
         <button class="aboveTable" onclick="return toSubmit('/Songs/NextPage');">Next Page</button>
+        <button class="aboveTable" style="@(songState.InvalidVideoIdFilter ? "background-color:red;color:white;" : "")" onclick="return toggleInvalidVideoIdFilter(this);">Invalid VideoId</button>
+        <span id="invalidVideoIdProcessing" class="video-id-processing" role="status" aria-live="polite" hidden>
+            <span class="video-id-spinner" aria-hidden="true"></span>Processing
+        </span>
+        @if (TempData["InvalidVideoIdFilterError"] is string filterError)
+        {
+            <span class="text-danger">@filterError</span>
+        }
         <!--
         <button class="aboveTable" onclick="return toSubmit('/Songs/BackToDataManageMenu');">Back</button>
         -->

@@ -12,6 +12,7 @@ using VodManageSystem.Models.Dao;
 using VodManageSystem.Models.DataModels;
 using VodManageSystem.Models.U2bModels;
 using Microsoft.AspNetCore.Http;
+using VodManageSystem.Services;
 
 namespace VodManageSystem.Controllers
 {
@@ -29,6 +30,7 @@ namespace VodManageSystem.Controllers
         private readonly SongsManager _songsManager;
         private readonly LanguagesManager _languagesManager;
         private readonly SingersManager _singersManager;
+        private readonly InvalidVideoIdService _invalidVideoIdService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:VodManageSystem.Controllers.SongController"/> class.
@@ -37,12 +39,13 @@ namespace VodManageSystem.Controllers
         /// <param name="songsManager">Song manager.</param>
         /// <param name="languagesManager">Language manager.</param>
         /// <param name="singersManager">Singer manager.</param>
-        public SongsController(KtvSystemDBContext context, SongsManager songsManager, LanguagesManager languagesManager, SingersManager singersManager)
+        public SongsController(KtvSystemDBContext context, SongsManager songsManager, LanguagesManager languagesManager, SingersManager singersManager, InvalidVideoIdService invalidVideoIdService)
         {
             _context = context;
             _songsManager = songsManager;
             _languagesManager = languagesManager;
             _singersManager = singersManager;
+            _invalidVideoIdService = invalidVideoIdService;
         }
 
         // GET: Song
@@ -68,7 +71,7 @@ namespace VodManageSystem.Controllers
         // get a list of songs
         // Get method.  
         [HttpGet, ActionName("SongsList")]
-        public IActionResult SongsList(string song_state)
+        public async Task<IActionResult> SongsList(string song_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -82,11 +85,72 @@ namespace VodManageSystem.Controllers
                 mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(song_state);
             }
 
-            List<Song> songs = _songsManager.GetOnePageOfSongs(mState);
+            List<Song> songs = await GetOnePageOfSongs(mState);
 
             ViewBag.SongState = JsonUtil.SetJsonStringFromObject(mState);
 
             return View(songs);
+        }
+
+        [HttpGet, ActionName("ToggleInvalidVideoId")]
+        public async Task<IActionResult> ToggleInvalidVideoId(string song_state)
+        {
+            if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
+
+            StateOfRequest mState = string.IsNullOrEmpty(song_state)
+                ? new StateOfRequest("SongNo")
+                : JsonUtil.GetObjectFromJsonString<StateOfRequest>(song_state);
+
+            if (mState.InvalidVideoIdFilter)
+            {
+                mState.InvalidVideoIdFilter = false;
+                if (mState.PageNoBeforeInvalidVideoIdFilter > 0)
+                {
+                    mState.CurrentPageNo = mState.PageNoBeforeInvalidVideoIdFilter;
+                }
+                mState.PageNoBeforeInvalidVideoIdFilter = 0;
+            }
+            else
+            {
+                try
+                {
+                    await _invalidVideoIdService.GetInvalidVideoIdsAsync(HttpContext.RequestAborted, forceRefresh: true);
+                    mState.PageNoBeforeInvalidVideoIdFilter = Math.Max(1, mState.CurrentPageNo);
+                    mState.InvalidVideoIdFilter = true;
+                }
+                catch (Exception)
+                {
+                    TempData["InvalidVideoIdFilterError"] = "YouTube video IDs could not be checked. The filter was not enabled.";
+                }
+            }
+
+            mState.StartTime = DateTime.Now;
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
+            return RedirectToAction(nameof(SongsList), new { song_state = temp_state });
+        }
+
+        private async Task<HashSet<string>?> GetInvalidVideoIdsIfEnabled(StateOfRequest mState)
+        {
+            if (!mState.InvalidVideoIdFilter)
+            {
+                return null;
+            }
+
+            return await _invalidVideoIdService.GetInvalidVideoIdsAsync(HttpContext.RequestAborted);
+        }
+
+        private async Task<List<Song>> GetOnePageOfSongs(StateOfRequest mState)
+        {
+            HashSet<string>? invalidVideoIds = await GetInvalidVideoIdsIfEnabled(mState);
+            return invalidVideoIds == null
+                ? _songsManager.GetOnePageOfSongs(mState)
+                : _songsManager.GetOnePageOfSongs(mState, invalidVideoIds);
+        }
+
+        private async Task<List<Song>> FindOnePageOfSongsForOneSong(StateOfRequest mState, Song song, int id)
+        {
+            HashSet<string>? invalidVideoIds = await GetInvalidVideoIdsIfEnabled(mState);
+            return _songsManager.FindOnePageOfSongsForOneSong(mState, song, id, invalidVideoIds);
         }
 
         // Get
@@ -132,7 +196,7 @@ namespace VodManageSystem.Controllers
                 selectedSong = await _songsManager.FindOneSongBySongNo(selectedSongNo);
             }
 
-            List<Song> songs = _songsManager.GetOnePageOfSongs(mState);
+            List<Song> songs = await GetOnePageOfSongs(mState);
             ViewBag.SongState = JsonUtil.SetJsonStringFromObject(mState);
             ViewBag.SelectedSongId = selectedSong?.Id ?? 0;
             ViewBag.SelectedSongNo = selectedSong?.SongNo ?? string.Empty;
@@ -393,7 +457,7 @@ namespace VodManageSystem.Controllers
             song.SNumWord = s_num_word;     // for order by song.SNumWord
             Console.WriteLine("Find.s_num_word = " + s_num_word);
 
-            List<Song> songsTemp = _songsManager.FindOnePageOfSongsForOneSong(mState, song, -1);
+            List<Song> songsTemp = await FindOnePageOfSongsForOneSong(mState, song, -1);
             temp_state = JsonUtil.SetJsonStringFromObject(mState);
             ViewBag.SongState = temp_state;
 
@@ -561,7 +625,7 @@ namespace VodManageSystem.Controllers
             if (sButton == "CANCEL")
             {
                 Song newSong = new Song();
-                List<Song> songsTemp = _songsManager.FindOnePageOfSongsForOneSong(mState, newSong, orgId);
+                List<Song> songsTemp = await FindOnePageOfSongsForOneSong(mState, newSong, orgId);
                 mState.IsFirstAddRecord = true;
                 temp_state = JsonUtil.SetJsonStringFromObject(mState);
                 ViewBag.SongState = temp_state;
@@ -682,7 +746,7 @@ namespace VodManageSystem.Controllers
                 {
                     // succeeded to update
                     Song newSong = new Song();
-                    List<Song> songsTemp = _songsManager.FindOnePageOfSongsForOneSong(mState, newSong, orgId);
+                    List<Song> songsTemp = await FindOnePageOfSongsForOneSong(mState, newSong, orgId);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                     ViewBag.SongState = temp_state;
@@ -783,7 +847,7 @@ namespace VodManageSystem.Controllers
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to delete a song
-                    List<Song> songsTemp = _songsManager.GetOnePageOfSongs(mState);
+                    List<Song> songsTemp = await GetOnePageOfSongs(mState);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
                     ViewBag.SongState = temp_state;
 
@@ -852,7 +916,7 @@ namespace VodManageSystem.Controllers
 
         // POST:
         [HttpPost, ActionName("Details")]
-        public IActionResult DetailsReturn(string song_state)
+        public async Task<IActionResult> DetailsReturn(string song_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -868,7 +932,7 @@ namespace VodManageSystem.Controllers
             mState.StartTime = DateTime.Now;
 
             int orgId = mState.OrgId;
-            List<Song> songsTemp = _songsManager.GetOnePageOfSongs(mState);
+            List<Song> songsTemp = await GetOnePageOfSongs(mState);
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             ViewBag.SongState = temp_state;
@@ -878,7 +942,7 @@ namespace VodManageSystem.Controllers
 
         // Get:
         [HttpGet,ActionName("ChangeOrder")]
-        public IActionResult ChangeOrder(string song_state)
+        public async Task<IActionResult> ChangeOrder(string song_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -896,7 +960,7 @@ namespace VodManageSystem.Controllers
             // Added on 2018-11-24
             // start from first page
             mState.CurrentPageNo = 1;
-            List<Song> songsTemp = _songsManager.GetOnePageOfSongs(mState);
+            List<Song> songsTemp = await GetOnePageOfSongs(mState);
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
             ViewBag.SongState = temp_state;
             return View(nameof(SongsList), songsTemp);

@@ -8,6 +8,7 @@ using VodManageSystem.Models.DataModels;
 using VodManageSystem.Models.Dao;
 using Newtonsoft.Json.Serialization;
 using System;
+using VodManageSystem.Services;
 
 namespace VodManageSystem
 {
@@ -35,6 +36,7 @@ namespace VodManageSystem
             );
 
             services.AddDistributedMemoryCache();
+            services.AddMemoryCache();
             services.AddSession();
 
             // For pomelo.EntityFrameworkCore.MySql
@@ -52,6 +54,7 @@ namespace VodManageSystem
             services.AddScoped<SingareasManager>();  // singer areas management service
             services.AddScoped<SingersManager>();    // singers management service
             services.AddScoped<SongsManager>();      // songs management service
+            services.AddScoped<InvalidVideoIdService>();
             services.AddScoped<PlayerscoreManager>();   // Playerscore Manager service
         }
 
