@@ -114,7 +114,8 @@ namespace VodManageSystem.Controllers
             {
                 try
                 {
-                    await _invalidVideoIdService.GetInvalidVideoIdsAsync(HttpContext.RequestAborted, forceRefresh: true);
+                    HashSet<string> invalidVideoIds = await _invalidVideoIdService.GetInvalidVideoIdsAsync(HttpContext.RequestAborted, forceRefresh: true);
+                    await _songsManager.MarkInvalidVideoIdsAsync(invalidVideoIds);
                     mState.PageNoBeforeInvalidVideoIdFilter = Math.Max(1, mState.CurrentPageNo);
                     mState.InvalidVideoIdFilter = true;
                 }

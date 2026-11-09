@@ -944,13 +944,27 @@ namespace VodManageSystem.Models.Dao
 
         private static IQueryable<Song> ApplyInvalidVideoIdFilter(IQueryable<Song> songs, StateOfRequest mState, HashSet<string>? invalidVideoIds)
         {
-            if (!mState.InvalidVideoIdFilter || invalidVideoIds == null)
+            if (!mState.InvalidVideoIdFilter)
             {
                 return songs;
             }
 
-            return songs.Where(song => song.NMpeg == "00" && song.MMpeg == "00" &&
-                (song.VodNo == null || song.VodNo == "" || invalidVideoIds.Contains(song.VodNo)));
+            return songs.Where(song => song.NMpeg == "99" && song.MMpeg == "99");
+        }
+
+        public async Task<int> MarkInvalidVideoIdsAsync(HashSet<string> invalidVideoIds)
+        {
+            if (invalidVideoIds == null)
+            {
+                return 0;
+            }
+
+            return await _context.Song
+                .Where(song => song.NMpeg == "00" && song.MMpeg == "00" &&
+                    (song.VodNo == null || song.VodNo == "" || invalidVideoIds.Contains(song.VodNo)))
+                .ExecuteUpdateAsync(updates => updates
+                    .SetProperty(song => song.NMpeg, "99")
+                    .SetProperty(song => song.MMpeg, "99"));
         }
 
         /// <summary>
